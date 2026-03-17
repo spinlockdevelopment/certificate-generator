@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A single-file HTML certificate of recognition for Jimmy Smith of the Springfield Volunteer Fire Department. Presentation date: **March 18, 2026**. Print target: **8.5" × 11"** full-page, no margins, on cream/ivory card stock.
+A single-file HTML certificate of recognition for Jimmy Smith of the Springfield Volunteer Fire Department. Presentation date: **March 18, 2026**. Print target: **8.5" × 11"** (full-page) or **8" × 10"** (centered on 8.5×11 for mat framing), selectable via toolbar toggle.
 
 **Single deliverable:** `index.html` — no build system, no dependencies except Google Fonts CDN.
 
@@ -12,7 +12,7 @@ A single-file HTML certificate of recognition for Jimmy Smith of the Springfield
 
 Open `index.html` directly in a browser. No server required.
 
-**To print:** Chrome or Edge → Ctrl+P → More Settings → uncheck Headers and Footers → Margins: **None** → Print.
+**To print:** Select print size in toolbar → Chrome or Edge → Ctrl+P → More Settings → uncheck Headers and Footers → Margins: **None** → Print.
 
 ## Design System
 
@@ -26,10 +26,13 @@ Fonts: **Cinzel** (display/headings, weights 400/600/700) + **EB Garamond** (bod
 
 ## Architecture
 
-- Layout: `position: absolute` inside fixed `.cert` container (`816px × 1056px` on screen, `8.5in × 11in` on print)
+- Layout: `position: absolute` inside fixed `.cert` container — screen dimensions driven by `--w`/`--h` CSS variables set by JS
+- Two size modes in `SIZE_MODES` (JS): `85x11` (816×1056px / 8.5in×11in, no margin) and `8x10` (768×960px / 8in×10in, centered on 8.5×11 via 0.5in/0.25in margins)
+- `@media print` static block handles everything except `@page` and cert dimensions; those are written dynamically into `<style id="print-size">` by `setMode()` on each toggle
+- Selected size mode is saved to `localStorage` under key `cert_default_size_mode`
 - Parchment texture: inline SVG `feTurbulence` data URIs — renders on screen, stripped on print via `background-image: none !important`
-- `@media print` block handles all print overrides including `@page` size/margins and `print-color-adjust: exact` for color-critical elements
-- No JavaScript. No external images. No frameworks.
+- `print-color-adjust: exact` applied to borders and corners for color-critical print rendering
+- No external images. No frameworks.
 
 ## Logo
 

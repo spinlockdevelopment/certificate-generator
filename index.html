@@ -494,8 +494,6 @@
      PRINT STYLES
   ══════════════════════════════════════════════════════ */
   @media print {
-    @page { size: 8.5in 11in; margin: 0; }
-
     body { background: none !important; margin: 0; padding: 0; display: block; }
 
     .toolbar { display: none !important; }
@@ -503,8 +501,6 @@
     .cert-page { margin-top: 0; padding: 0; min-height: 0; display: block; }
 
     .cert-outer {
-      width: 8.5in !important;
-      height: 11in !important;
       box-shadow: none !important;
       overflow: visible !important;
       margin: 0 auto;
@@ -513,8 +509,6 @@
     .cert-scale { transform: none !important; }
 
     .cert {
-      width: 8.5in !important;
-      height: 11in !important;
       background: none !important;
       box-shadow: none !important;
       page-break-inside: avoid;
@@ -533,6 +527,7 @@
     }
   }
 </style>
+<style id="print-size">/* injected by setMode() */</style>
 </head>
 <body>
 
@@ -564,11 +559,18 @@
       <button class="sig-btn" id="sig-add" title="Add signature">&#43;</button>
     </div>
   </div>
+  <div class="toolbar-divider"></div>
+
+  <div class="toolbar-group">
+    <span class="toolbar-label">Print Size</span>
+    <button class="color-btn size-btn" data-size="8x10">8 &times; 10</button>
+    <button class="color-btn size-btn active" data-size="85x11">8.5 &times; 11</button>
+  </div>
 
   <div class="print-btn-wrap">
     <button class="print-btn" id="print-btn">Print Certificate</button>
     <div class="print-tip">
-      In print dialog: <strong>More settings</strong> &rarr; uncheck <strong>Headers and footers</strong>
+      In print dialog: <strong>More settings</strong> &rarr; uncheck <strong>Headers and footers</strong> &rarr; Margins: <strong>None</strong>
     </div>
   </div>
 
@@ -836,19 +838,57 @@ function loadFromStorage() {
       b.classList.toggle('active', b.dataset.bg === savedBg);
     });
   }
+
+  // Size mode
+  setMode(lsLoad('size_mode') ?? '85x11');
 }
+
+// ─── Size modes ────────────────────────────────────────────────────────────
+const SIZE_MODES = {
+  '85x11': { w: 816,  h: 1056, certW: '8.5in', certH: '11in', pageMargin: '0'              },
+  '8x10':  { w: 768,  h: 960,  certW: '8in',   certH: '10in', pageMargin: '0.5in 0.25in'   }
+};
+
+let currentMode = '85x11';
+
+function setMode(mode) {
+  currentMode = mode;
+  const m = SIZE_MODES[mode];
+
+  document.documentElement.style.setProperty('--w', m.w + 'px');
+  document.documentElement.style.setProperty('--h', m.h + 'px');
+
+  document.getElementById('print-size').textContent =
+    '@page { size: 8.5in 11in; margin: ' + m.pageMargin + '; }\n' +
+    '@media print {\n' +
+    '  .cert-outer { width: ' + m.certW + ' !important; height: ' + m.certH + ' !important; }\n' +
+    '  .cert        { width: ' + m.certW + ' !important; height: ' + m.certH + ' !important; }\n' +
+    '}';
+
+  document.querySelectorAll('.size-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.size === mode);
+  });
+
+  lsSave('size_mode', mode);
+  scaleCert();
+}
+
+document.querySelectorAll('.size-btn').forEach(btn => {
+  btn.addEventListener('click', () => setMode(btn.dataset.size));
+});
 
 // ─── Certificate scaling ───────────────────────────────────────────────────
 function scaleCert() {
+  const m      = SIZE_MODES[currentMode];
   const availW = window.innerWidth  - 40;        // 20px padding each side
   const availH = window.innerHeight - 54 - 76;   // toolbar + vert padding
-  const scale  = Math.min(availW / 816, availH / 1056, 1);
+  const scale  = Math.min(availW / m.w, availH / m.h, 1);
 
   document.querySelector('.cert-scale').style.transform = 'scale(' + scale + ')';
 
   const outer = document.querySelector('.cert-outer');
-  outer.style.width  = Math.round(816 * scale) + 'px';
-  outer.style.height = Math.round(1056 * scale) + 'px';
+  outer.style.width  = Math.round(m.w * scale) + 'px';
+  outer.style.height = Math.round(m.h * scale) + 'px';
 }
 
 window.addEventListener('resize', scaleCert);
@@ -898,7 +938,6 @@ function getTomorrowDate() {
 // ─── Init ──────────────────────────────────────────────────────────────────
 initBodyText();
 loadFromStorage();
-scaleCert();
 
 // Re-run after fonts load for accurate measurements
 document.fonts.ready.then(() => {
