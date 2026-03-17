@@ -761,9 +761,9 @@ document.getElementById('sig-remove').addEventListener('click', () => {
 });
 
 // ─── Card stock color picker ───────────────────────────────────────────────
-document.querySelectorAll('.color-btn').forEach(btn => {
+document.querySelectorAll('.color-btn[data-bg]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.color-btn[data-bg]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.documentElement.style.setProperty('--cream', btn.dataset.bg);
     lsSave('bg', btn.dataset.bg);
@@ -871,6 +871,7 @@ function setMode(mode) {
 
   lsSave('size_mode', mode);
   scaleCert();
+  adjustSpacing();
 }
 
 document.querySelectorAll('.size-btn').forEach(btn => {
