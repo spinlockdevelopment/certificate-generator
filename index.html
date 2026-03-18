@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Springfield Volunteer Fire Department</title>
+<title>Certificate Generator</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -223,8 +223,8 @@
     border-color: var(--crimson);
     border-style: solid;
   }
-  .cert::before { top: 28px; left: 28px; border-width: 2px 0 0 2px; }
-  .cert::after  { bottom: 28px; right: 28px; border-width: 0 2px 2px 0; }
+  .cert::before { top: 50px; left: 50px; border-width: 2px 0 0 2px; }
+  .cert::after  { bottom: 50px; right: 50px; border-width: 0 2px 2px 0; }
 
   .corner-tl-alt, .corner-br-alt {
     position: absolute;
@@ -232,17 +232,17 @@
     border-color: var(--crimson);
     border-style: solid;
   }
-  .corner-tl-alt { top: 28px; right: 28px; border-width: 2px 2px 0 0; }
-  .corner-br-alt { bottom: 28px; left: 28px; border-width: 0 0 2px 2px; }
+  .corner-tl-alt { top: 50px; right: 50px; border-width: 2px 2px 0 0; }
+  .corner-br-alt { bottom: 50px; left: 50px; border-width: 0 0 2px 2px; }
 
   /* ─── Double border ──────────────────────────────────── */
-  .border-outer { position: absolute; inset: 22px; border: 1.5px solid var(--crimson); pointer-events: none; }
-  .border-inner { position: absolute; inset: 30px; border: 0.5px solid var(--crimson); pointer-events: none; }
+  .border-outer { position: absolute; inset: 42px; border: 1.5px solid var(--crimson); pointer-events: none; }
+  .border-inner { position: absolute; inset: 53px; border: 0.5px solid var(--crimson); pointer-events: none; }
 
   /* ─── Content area ───────────────────────────────────── */
   .content {
     position: absolute;
-    inset: 48px;
+    inset: 81px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -291,7 +291,7 @@
 
   .org-name {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 11.5px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.28em;
     color: var(--crimson);
@@ -318,7 +318,7 @@
   /* ─── Document title ─────────────────────────────────── */
   .doc-title {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 19px;
+    font-size: 22px;
     font-weight: 700;
     letter-spacing: 0.18em;
     color: var(--ink);
@@ -338,7 +338,7 @@
   .presented-to {
     font-family: 'EB Garamond', Georgia, serif;
     font-style: italic;
-    font-size: 13px;
+    font-size: 15px;
     color: var(--ink-muted);
     letter-spacing: 0.06em;
     margin-bottom: 6px;
@@ -346,7 +346,7 @@
 
   .recipient-name {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 34px;
+    font-size: 38px;
     font-weight: 700;
     color: var(--ink);
     letter-spacing: 0.05em;
@@ -369,7 +369,7 @@
   /* ─── Body text ──────────────────────────────────────── */
   .body-text {
     font-family: 'EB Garamond', Georgia, serif;
-    font-size: 15.5px;
+    font-size: 17.5px;
     line-height: 1.75;
     color: var(--ink-mid);
     text-align: center;
@@ -442,7 +442,7 @@
   }
   .sig-name {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 9.5px;
+    font-size: 11px;
     font-weight: 600;
     color: var(--ink);
     letter-spacing: 0.08em;
@@ -451,7 +451,7 @@
   .sig-title {
     font-family: 'EB Garamond', Georgia, serif;
     font-style: italic;
-    font-size: 10px;
+    font-size: 11.5px;
     color: var(--ink-muted);
     text-align: center;
     margin-top: 1px;
@@ -460,7 +460,7 @@
   /* ─── Presented by / date ────────────────────────────── */
   .presented-by {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 8.5px;
+    font-size: 10px;
     letter-spacing: 0.14em;
     color: var(--ink-muted);
     text-align: center;
@@ -471,7 +471,7 @@
   .cert-date {
     font-family: 'EB Garamond', Georgia, serif;
     font-style: italic;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--ink-mid);
     letter-spacing: 0.05em;
     margin-bottom: 10px;
