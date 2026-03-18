@@ -223,8 +223,8 @@
     border-color: var(--crimson);
     border-style: solid;
   }
-  .cert::before { top: 50px; left: 50px; border-width: 2px 0 0 2px; }
-  .cert::after  { bottom: 50px; right: 50px; border-width: 0 2px 2px 0; }
+  .cert::before { top: 63px; left: 63px; border-width: 2px 0 0 2px; }
+  .cert::after  { bottom: 63px; right: 63px; border-width: 0 2px 2px 0; }
 
   .corner-tl-alt, .corner-br-alt {
     position: absolute;
@@ -232,12 +232,12 @@
     border-color: var(--crimson);
     border-style: solid;
   }
-  .corner-tl-alt { top: 50px; right: 50px; border-width: 2px 2px 0 0; }
-  .corner-br-alt { bottom: 50px; left: 50px; border-width: 0 0 2px 2px; }
+  .corner-tl-alt { top: 63px; right: 63px; border-width: 2px 2px 0 0; }
+  .corner-br-alt { bottom: 63px; left: 63px; border-width: 0 0 2px 2px; }
 
   /* ─── Double border ──────────────────────────────────── */
-  .border-outer { position: absolute; inset: 42px; border: 1.5px solid var(--crimson); pointer-events: none; }
-  .border-inner { position: absolute; inset: 53px; border: 0.5px solid var(--crimson); pointer-events: none; }
+  .border-outer { position: absolute; inset: 55px; border: 1.5px solid var(--crimson); pointer-events: none; }
+  .border-inner { position: absolute; inset: 66px; border: 0.5px solid var(--crimson); pointer-events: none; }
 
   /* ─── Content area ───────────────────────────────────── */
   .content {
@@ -247,7 +247,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 32px 22px;
+    padding: 6px 32px 11px;
   }
 
   /* ─── Top section ────────────────────────────────────── */
@@ -425,7 +425,7 @@
     display: flex;
     justify-content: space-between;
     width: 92%;
-    margin-bottom: 16px;
+    margin-bottom: 19px;
     margin-top: 4px;
   }
   .sig-block.count-1 { justify-content: center; }
@@ -461,11 +461,12 @@
   .presented-by {
     font-family: 'Cinzel', Georgia, serif;
     font-size: 10px;
+    font-weight: 700;
     letter-spacing: 0.14em;
     color: var(--ink-muted);
     text-align: center;
     text-transform: uppercase;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
 
   .cert-date {
@@ -632,7 +633,7 @@
               <hr class="rule rule-sm">
             </div>
             <div class="sig-block count-2"></div>
-            <div class="rule-set" style="margin-bottom:8px;">
+            <div class="rule-set" style="margin-bottom:12px;">
               <hr class="rule rule-gold">
               <hr class="rule rule-mid">
               <hr class="rule rule-thin">
@@ -916,7 +917,7 @@ function adjustSpacing() {
     const available  = Math.max(0, innerH - topH - midH - botH);
     const forMargins = Math.max(0, available - 20);
 
-    presentedTo.style.marginTop = Math.round(forMargins / 3) + 'px';
+    presentedTo.style.marginTop = Math.round(forMargins / 5) + 'px';
     sigRule.style.marginBottom  = Math.round((forMargins * 2) / 3) + 'px';
   });
 }
