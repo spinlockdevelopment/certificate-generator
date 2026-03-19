@@ -1,0 +1,287 @@
+/* ─── Certificate card ───────────────────────────────── */
+.cert {
+  width: var(--w);
+  height: var(--h);
+  position: relative;
+  background-color: var(--cream);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.15' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.025'/%3E%3C/svg%3E");
+  overflow: hidden;
+}
+
+/* ─── Corner ornaments ───────────────────────────────── */
+.cert::before, .cert::after {
+  content: '';
+  position: absolute;
+  width: 60px; height: 60px;
+  border-color: var(--crimson);
+  border-style: solid;
+}
+.cert::before { top: 63px; left: 63px; border-width: 2px 0 0 2px; }
+.cert::after  { bottom: 63px; right: 63px; border-width: 0 2px 2px 0; }
+
+.corner-tl-alt, .corner-br-alt {
+  position: absolute;
+  width: 60px; height: 60px;
+  border-color: var(--crimson);
+  border-style: solid;
+}
+.corner-tl-alt { top: 63px; right: 63px; border-width: 2px 2px 0 0; }
+.corner-br-alt { bottom: 63px; left: 63px; border-width: 0 0 2px 2px; }
+
+/* ─── Double border ──────────────────────────────────── */
+.border-outer { position: absolute; inset: 55px; border: 1.5px solid var(--crimson); pointer-events: none; }
+.border-inner { position: absolute; inset: 66px; border: 0.5px solid var(--crimson); pointer-events: none; }
+
+/* ─── Content area ───────────────────────────────────── */
+.content {
+  position: absolute;
+  inset: 81px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 32px 11px;
+}
+
+/* ─── Top section ────────────────────────────────────── */
+.top-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.cross-wrap { margin-bottom: 20px; }
+
+/* ─── Logo upload overlay ────────────────────────────── */
+.logo-wrap {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+.logo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+  border-radius: 3px;
+}
+.logo-wrap:hover .logo-overlay { opacity: 1; }
+.logo-overlay span {
+  color: #fff;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.org-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: var(--crimson);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* ─── Rules ──────────────────────────────────────────── */
+.rule-set {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+.rule      { width: 88%; border: none; }
+.rule-thin { border-top: 0.5px solid var(--ink); }
+.rule-mid  { border-top: 1px solid var(--crimson); width: 80%; }
+.rule-gold { border-top: 0.75px solid var(--gold); width: 72%; }
+.rule-sm   { width: 55%; border-top: 0.5px solid var(--ink-muted); }
+
+/* ─── Document title ─────────────────────────────────── */
+.doc-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+/* ─── Middle section ─────────────────────────────────── */
+.mid-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.presented-to {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.recipient-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  text-align: center;
+  line-height: 1.15;
+  margin-bottom: 18px;
+}
+
+/* ─── Ornamental divider ─────────────────────────────── */
+.orn-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.orn-line    { width: 60px; height: 0.75px; background: var(--crimson); }
+.orn-dot     { width: 6px; height: 6px; border-radius: 50%; background: var(--crimson); }
+.orn-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
+
+/* ─── Body text ──────────────────────────────────────── */
+.body-text {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 17.5px;
+  line-height: 1.75;
+  color: var(--ink-mid);
+  text-align: center;
+  width: 88%;
+  margin-bottom: 16px;
+}
+.body-text em { font-style: italic; color: var(--ink); }
+
+/* Emphasis hint — fixed overlay, shown via JS when body text is focused */
+.hint-popup {
+  display: none;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 14%;
+  background: #ffffff;
+  color: #111111;
+  border: 2px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 16px 28px;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.7;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 500;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.22);
+  pointer-events: none;
+}
+.hint-popup.visible { display: block; }
+.hint-popup-label {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #555;
+  display: block;
+  margin-bottom: 6px;
+}
+.hint-popup em { color: #8B0000; font-style: italic; }
+
+/* ─── Bottom section ─────────────────────────────────── */
+.bottom-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* ─── Signature block ────────────────────────────────── */
+.sig-block {
+  display: flex;
+  justify-content: space-between;
+  width: 92%;
+  margin-bottom: 19px;
+  margin-top: 4px;
+}
+.sig-block.count-1 { justify-content: center; }
+.sig-block.count-1 .sig-unit { width: 56%; }
+.sig-block.count-2 .sig-unit { width: 44%; }
+.sig-block.count-3 .sig-unit { width: 30%; }
+
+.sig-unit { display: flex; flex-direction: column; align-items: center; }
+
+.sig-line {
+  width: 100%;
+  border-top: 0.8px solid var(--ink);
+  margin-bottom: 5px;
+}
+.sig-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+.sig-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: var(--ink-muted);
+  text-align: center;
+  margin-top: 1px;
+}
+
+/* ─── Presented by / date ────────────────────────────── */
+.presented-by {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.cert-date {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-mid);
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+/* ─── Gold accent bar ────────────────────────────────── */
+.gold-bar {
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin-bottom: 3px;
+}
+
+/* ─── Editable field styles ──────────────────────────── */
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { box-shadow: 0 0 0 1.5px rgba(184,149,58,0.2); border-radius: 1px; }
+[contenteditable]:focus { box-shadow: 0 0 0 1.5px rgba(184,149,58,0.45); border-radius: 1px; }

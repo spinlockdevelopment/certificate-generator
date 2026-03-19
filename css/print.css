@@ -1,0 +1,36 @@
+/* ══════════════════════════════════════════════════════
+   PRINT STYLES
+══════════════════════════════════════════════════════ */
+@media print {
+  body { background: none !important; margin: 0; padding: 0; display: block; }
+
+  .toolbar { display: none !important; }
+
+  .cert-page { margin-top: 0; padding: 0; min-height: 0; display: block; }
+
+  .cert-outer {
+    box-shadow: none !important;
+    overflow: visible !important;
+    margin: 0 auto;
+  }
+
+  .cert-scale { transform: none !important; }
+
+  .cert {
+    background: none !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  [contenteditable]:hover,
+  [contenteditable]:focus { box-shadow: none !important; }
+
+  .hint-popup { display: none !important; }
+
+  .border-outer, .border-inner,
+  .cert::before, .cert::after,
+  .corner-tl-alt, .corner-br-alt {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
