@@ -37,8 +37,9 @@
   --mb-recipient:    calc(18px * var(--spacing-scale));
   --mb-body:         calc(16px * var(--spacing-scale));
   --mb-sig:          calc(19px * var(--spacing-scale));
-  --mb-presented-by: calc(8px  * var(--spacing-scale));
-  --mb-date:         calc(10px * var(--spacing-scale));
+  --mb-presented-by:  calc(8px  * var(--spacing-scale));
+  --mb-presented-to:  calc(6px  * var(--spacing-scale));
+  --mb-date:          calc(10px * var(--spacing-scale));
 
   /* Font families (swapped by font pair selector) */
   --font-heading: 'Cinzel', Georgia, serif;

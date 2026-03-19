@@ -136,7 +136,7 @@
   font-size: var(--fs-presented-to);
   color: var(--ink-muted);
   letter-spacing: 0.06em;
-  margin-bottom: 6px;
+  margin-bottom: var(--mb-presented-to);
 }
 
 .recipient-name {

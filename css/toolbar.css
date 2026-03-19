@@ -13,7 +13,7 @@
 }
 
 .toolbar-brand {
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.18em;
@@ -37,7 +37,7 @@
 }
 
 .toolbar-label {
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: var(--font-body-ff);
   font-size: 11px;
   color: #666;
   letter-spacing: 0.06em;
@@ -54,7 +54,7 @@
   border: 1px solid #363636;
   border-radius: 3px;
   color: #999;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: var(--font-body-ff);
   font-size: 12px;
   cursor: pointer;
   transition: border-color 0.12s, color 0.12s;
@@ -95,7 +95,7 @@
 .sig-btn:disabled { opacity: 0.25; cursor: default; }
 
 .sig-count-display {
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 13px;
   color: #aaa;
   min-width: 14px;
@@ -116,7 +116,7 @@
   background: #1e1e1e;
   border: 1px solid #3a3a3a;
   color: #b0b0b0;
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: var(--font-body-ff);
   font-size: 11.5px;
   line-height: 1.5;
   padding: 8px 12px;
@@ -134,7 +134,7 @@
   border: none;
   border-radius: 3px;
   color: #f5e8e8;
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.12em;
