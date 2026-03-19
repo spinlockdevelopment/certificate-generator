@@ -3,13 +3,48 @@
 
 /* ─── Variables ──────────────────────────────────────── */
 :root {
-  --crimson:   #8B0000;
-  --crimson-lt:#A52020;
-  --ink:       #1A1A1A;
-  --ink-mid:   #3A3330;
-  --ink-muted: #6B6560;
-  --cream:     #FDFAF2;
-  --gold:      #B8953A;
+  /* Colors */
+  --accent:      #8B0000;
+  --accent-lt:   #A52020;
+  --gold:        #B8953A;
+  --cream:       #FDFAF2;
+  --ink:         #1A1A1A;
+  --ink-mid:     #3A3330;
+  --ink-muted:   #6B6560;
+
+  /* Scale multipliers (driven by format panel sliders) */
+  --font-scale:    1;
+  --spacing-scale: 1;
+  --border-margin: 63px;
+
+  /* Derived font sizes */
+  --fs-org:          calc(13px   * var(--font-scale));
+  --fs-title:        calc(22px   * var(--font-scale));
+  --fs-recipient:    calc(38px   * var(--font-scale));
+  --fs-body:         calc(17.5px * var(--font-scale));
+  --fs-presented-to: calc(15px   * var(--font-scale));
+  --fs-sig-name:     calc(11px   * var(--font-scale));
+  --fs-sig-title:    calc(11.5px * var(--font-scale));
+  --fs-presented-by: calc(10px   * var(--font-scale));
+  --fs-date:         calc(14px   * var(--font-scale));
+
+  /* Derived spacing */
+  --gap-rules:       calc(3px  * var(--spacing-scale));
+  --mb-org:          calc(10px * var(--spacing-scale));
+  --mb-rules:        calc(12px * var(--spacing-scale));
+  --mb-title:        calc(12px * var(--spacing-scale));
+  --mb-divider:      calc(16px * var(--spacing-scale));
+  --mb-recipient:    calc(18px * var(--spacing-scale));
+  --mb-body:         calc(16px * var(--spacing-scale));
+  --mb-sig:          calc(19px * var(--spacing-scale));
+  --mb-presented-by: calc(8px  * var(--spacing-scale));
+  --mb-date:         calc(10px * var(--spacing-scale));
+
+  /* Font families (swapped by font pair selector) */
+  --font-heading: 'Cinzel', Georgia, serif;
+  --font-body-ff: 'EB Garamond', Georgia, serif;
+
+  /* Cert dimensions (overwritten by JS setMode()) */
   --w: 816px;
   --h: 1056px;
 }
