@@ -59,6 +59,10 @@
           @click="$store.cert.togglePanel()"
           x-data>Format</button>
 
+  <button class="action-btn" id="save-cert-btn">Save Certificate</button>
+  <button class="action-btn" id="load-cert-btn">Load Certificate</button>
+  <input type="file" id="load-cert-input" accept=".json" style="display:none;">
+
   <div class="print-btn-wrap">
     <button class="print-btn" id="print-btn">Print Certificate</button>
     <div class="print-tip">
@@ -245,7 +249,10 @@ document.addEventListener('alpine:init', () => {
 });
 
 document.addEventListener('alpine:initialized', () => {
-  initBodyText(adjustSpacing);
+  initBodyText(adjustSpacing, raw => {
+    Alpine.store('cert').content.body = raw;
+    Alpine.store('cert').persistState();
+  });
 
   // Prevent newlines in single-line fields
   document.querySelector('.cert').addEventListener('keydown', e => {
@@ -256,29 +263,30 @@ document.addEventListener('alpine:initialized', () => {
     }
   });
 
-  // Save static fields on blur
+  // Sync text field edits to store content and persist
   [
-    ['.doc-title',      'title'       ],
-    ['.recipient-name', 'recipient'   ],
-    ['.org-name',       'org_name'    ],
-    ['.presented-by',   'presented_by'],
-    ['.cert-date',      'date'        ],
+    ['.doc-title',      'title'      ],
+    ['.recipient-name', 'recipient'  ],
+    ['.org-name',       'orgName'    ],
+    ['.presented-by',   'presentedBy'],
+    ['.cert-date',      'date'       ],
   ].forEach(([sel, key]) => {
     document.querySelector(sel).addEventListener('blur', function() {
-      save(key, this.textContent.trim());
+      Alpine.store('cert').content[key] = this.textContent.trim();
+      Alpine.store('cert').persistState();
     });
   });
 
-  // Save sig edits on blur
+  // Sync sig edits to store content and persist
   document.querySelector('.cert').addEventListener('focusout', e => {
     if (e.target.matches('.sig-name, .sig-title')) {
       const store = Alpine.store('cert');
       const units = document.querySelectorAll('.sig-unit');
-      store.sigData = Array.from(units).map(u => ({
+      store.content.sigs = Array.from(units).map(u => ({
         name:  u.querySelector('.sig-name').textContent.trim(),
         title: u.querySelector('.sig-title').textContent.trim(),
       }));
-      save('sigs', JSON.stringify(store.sigData));
+      store.persistState();
     }
   });
 
@@ -320,6 +328,30 @@ document.addEventListener('alpine:initialized', () => {
   document.getElementById('print-btn').addEventListener('click', () => {
     if (document.activeElement?.isContentEditable) document.activeElement.blur();
     setTimeout(() => window.print(), 50);
+  });
+
+  // Save certificate to file
+  document.getElementById('save-cert-btn').addEventListener('click', () => {
+    Alpine.store('cert').saveCertToFile();
+  });
+
+  // Load certificate from file
+  document.getElementById('load-cert-btn').addEventListener('click', () => {
+    document.getElementById('load-cert-input').click();
+  });
+
+  document.getElementById('load-cert-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      let parsed;
+      try { parsed = JSON.parse(ev.target.result); } catch(err) { return; }
+      if (!parsed.content || !parsed.format) return;
+      Alpine.store('cert').loadFromData(parsed);
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   });
 
   // Scale on resize
