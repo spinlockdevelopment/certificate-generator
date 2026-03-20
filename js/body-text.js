@@ -1,5 +1,4 @@
 // js/body-text.js
-import { save } from './storage.js';
 
 export function toHTML(raw) {
   return raw.replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -14,7 +13,7 @@ export function toRaw(html) {
     .replace(/&gt;/g,  '>');
 }
 
-export function initBodyText(adjustSpacing) {
+export function initBodyText(adjustSpacing, onBodyChange) {
   const p    = document.querySelector('.body-text');
   const hint = document.getElementById('hint-popup');
 
@@ -25,7 +24,7 @@ export function initBodyText(adjustSpacing) {
 
   p.addEventListener('blur', () => {
     const raw = p.textContent;
-    save('body_raw', raw);
+    if (onBodyChange) onBodyChange(raw);
     p.innerHTML = toHTML(raw);
     hint.classList.remove('visible');
     adjustSpacing();

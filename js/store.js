@@ -1,6 +1,6 @@
 // js/store.js
 import { SIZE_MODES, FONT_PAIRS, PALETTES, DEFAULT_CERT_DATA } from './config.js';
-import { save, load, persistState as storagePersist, loadState } from './storage.js';
+import { load, persistState as storagePersist, loadState } from './storage.js';
 import { applyCSSVars, applyFontPair, scaleCert, adjustSpacing, renderSigs } from './cert-render.js';
 import { toHTML } from './body-text.js';
 
