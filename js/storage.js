@@ -10,3 +10,17 @@ export function load(field, fallback = null) {
   const v = localStorage.getItem(key(field));
   return v !== null ? v : fallback;
 }
+
+export function persistState(blob) {
+  try { localStorage.setItem('cert_state', JSON.stringify(blob)); } catch(e) {}
+}
+
+export function loadState() {
+  try {
+    const v = localStorage.getItem('cert_state');
+    if (!v) return null;
+    const parsed = JSON.parse(v);
+    if (!parsed.content || !parsed.format) return null;
+    return parsed;
+  } catch(e) { return null; }
+}
