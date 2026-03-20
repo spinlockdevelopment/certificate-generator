@@ -318,7 +318,7 @@ document.addEventListener('alpine:initialized', () => {
     const reader = new FileReader();
     reader.onload = ev => {
       document.getElementById('logo-img').src = ev.target.result;
-      save('logo', ev.target.result);
+      save('logo', ev.target.result); // logo kept in its own key, separate from cert_state blob
     };
     reader.readAsDataURL(file);
     e.target.value = '';
