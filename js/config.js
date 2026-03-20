@@ -46,7 +46,11 @@ export const DEFAULT_CERT_DATA = {
     borderMargin:  63,
     fontPairIndex: 0,
     paletteIndex:  0,
-    cardStock:     '#FDFAF2',
+    cardStock:     PALETTES[0].cream,
     sizeMode:      '85x11',
   },
 };
+
+// Temporary shims — removed when store.js is rewritten in Task 3
+export const DEFAULT_BODY = DEFAULT_CERT_DATA.content.body;
+export const DEFAULT_SIGS = DEFAULT_CERT_DATA.content.sigs;
