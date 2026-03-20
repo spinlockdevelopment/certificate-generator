@@ -20,15 +20,33 @@ export const PALETTES = [
   { name: 'Midnight & Rose', accent:'#2d1b4e', accentLt:'#3d2a5e', gold:'#c4a0b0', cream:'#FAF7FC', ink:'#1a0f2a', inkMid:'#2a1f3a', inkMuted:'#6a5a72' },
 ];
 
-export const DEFAULT_BODY =
-  'In recognition of *exceptional service* and outstanding contributions to the community. ' +
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ' +
-  'ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco ' +
-  'laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in ' +
-  'voluptate velit esse cillum dolore eu fugiat nulla pariatur. *Excepteur sint occaecat* ' +
-  'cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
-
-export const DEFAULT_SIGS = [
-  { name: 'Clark Kent',   title: 'Reporter, Daily Planet' },
-  { name: 'Peter Parker', title: 'Photographer'           },
-];
+export const DEFAULT_CERT_DATA = {
+  content: {
+    title:       'Certificate of Recognition',
+    orgName:     'Springfield Volunteer Fire Department',
+    recipient:   'Jimmy Smith',
+    body:
+      'In recognition of *exceptional service* and outstanding contributions to the community. ' +
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ' +
+      'ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco ' +
+      'laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in ' +
+      'voluptate velit esse cillum dolore eu fugiat nulla pariatur. *Excepteur sint occaecat* ' +
+      'cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    presentedBy: 'Presented by the Volunteer Fire Department',
+    date:        'March 18, 2026',
+    sigs: [
+      { name: 'Name', title: 'Title, Springfield VFD' },
+      { name: 'Name', title: 'Title, Springfield VFD' },
+    ],
+    logoName:    'vfd_logo.png',
+  },
+  format: {
+    fontScale:     1,
+    spacingScale:  1,
+    borderMargin:  63,
+    fontPairIndex: 0,
+    paletteIndex:  0,
+    cardStock:     '#FDFAF2',
+    sizeMode:      '85x11',
+  },
+};
