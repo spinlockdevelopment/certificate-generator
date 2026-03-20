@@ -1,12 +1,8 @@
 // js/store.js
-import { SIZE_MODES, FONT_PAIRS, PALETTES, DEFAULT_SIGS, DEFAULT_BODY } from './config.js';
-import { save, load } from './storage.js';
+import { SIZE_MODES, FONT_PAIRS, PALETTES, DEFAULT_CERT_DATA } from './config.js';
+import { save, load, persistState as storagePersist, loadState } from './storage.js';
 import { applyCSSVars, applyFontPair, scaleCert, adjustSpacing, renderSigs } from './cert-render.js';
 import { toHTML } from './body-text.js';
-
-function getTodayDate() {
-  return new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
 
 function applyMode(store, mode) {
   store.sizeMode = mode;
@@ -28,34 +24,116 @@ function applyMode(store, mode) {
 
 export function initStore() {
   Alpine.store('cert', {
-    // ── Format panel state ──
-    fontScale:     parseFloat(load('fontScale',    '1')),
-    spacingScale:  parseFloat(load('spacingScale', '1')),
-    borderMargin:  parseInt(load('borderMargin',   '63'), 10),
-    fontPairIndex: parseInt(load('fontPairIndex',  '0'),  10),
-    paletteIndex:  parseInt(load('paletteIndex',   '0'),  10),
+    // ── Format state (top-level, unchanged by this refactor) ──
+    fontScale:     DEFAULT_CERT_DATA.format.fontScale,
+    spacingScale:  DEFAULT_CERT_DATA.format.spacingScale,
+    borderMargin:  DEFAULT_CERT_DATA.format.borderMargin,
+    fontPairIndex: DEFAULT_CERT_DATA.format.fontPairIndex,
+    paletteIndex:  DEFAULT_CERT_DATA.format.paletteIndex,
+    sizeMode:      DEFAULT_CERT_DATA.format.sizeMode,
+    cardStock:     DEFAULT_CERT_DATA.format.cardStock,
 
-    // ── Toolbar state (migrated from inline script) ──
-    sizeMode:  load('size_mode', '85x11'),
-    cardStock: load('bg',        PALETTES[0].cream),
-    sigData:   JSON.parse(load('sigs', JSON.stringify(DEFAULT_SIGS))),
+    // ── Content state (canonical in-memory copy of all text fields) ──
+    content: { ...DEFAULT_CERT_DATA.content, sigs: [...DEFAULT_CERT_DATA.content.sigs] },
+
+    // ── UI state ──
     panelOpen: false,
 
-    // ── Expose config arrays for Alpine x-for template loops ──
+    // ── Config arrays for Alpine x-for template loops ──
     fontPairs: FONT_PAIRS,
     palettes:  PALETTES,
 
+    // ── Persist entire state to one localStorage blob ──
+    persistState() {
+      storagePersist({
+        content: this.content,
+        format: {
+          fontScale:     this.fontScale,
+          spacingScale:  this.spacingScale,
+          borderMargin:  this.borderMargin,
+          fontPairIndex: this.fontPairIndex,
+          paletteIndex:  this.paletteIndex,
+          cardStock:     this.cardStock,
+          sizeMode:      this.sizeMode,
+        },
+      });
+    },
+
+    // ── Save current state to a .json file ──
+    saveCertToFile() {
+      const json = JSON.stringify({
+        content: this.content,
+        format: {
+          fontScale:     this.fontScale,
+          spacingScale:  this.spacingScale,
+          borderMargin:  this.borderMargin,
+          fontPairIndex: this.fontPairIndex,
+          paletteIndex:  this.paletteIndex,
+          cardStock:     this.cardStock,
+          sizeMode:      this.sizeMode,
+        },
+      }, null, 2);
+      const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'certificate.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    },
+
+    // ── Load state from a parsed JSON object (from file upload) ──
+    loadFromData(data) {
+      const c = { ...DEFAULT_CERT_DATA.content, ...data.content };
+      const f = { ...DEFAULT_CERT_DATA.format,  ...data.format  };
+
+      // Apply format fields — paletteIndex before cardStock (preserves custom card stock)
+      this.fontScale     = +f.fontScale;
+      this.spacingScale  = +f.spacingScale;
+      this.borderMargin  = +f.borderMargin;
+      this.fontPairIndex = +f.fontPairIndex;
+      this.paletteIndex  = +f.paletteIndex;
+      this.sizeMode      = f.sizeMode;
+      this.cardStock     = f.cardStock;
+
+      applyCSSVars(this);
+      applyFontPair(FONT_PAIRS[this.fontPairIndex]);
+      applyMode(this, this.sizeMode);
+
+      // Update content
+      this.content = c;
+
+      // Populate DOM
+      document.querySelector('.doc-title').textContent      = c.title;
+      document.querySelector('.recipient-name').textContent = c.recipient;
+      document.querySelector('.org-name').textContent       = c.orgName;
+      document.querySelector('.presented-by').textContent   = c.presentedBy;
+      document.querySelector('.cert-date').textContent      = c.date;
+      document.querySelector('.body-text').innerHTML        = toHTML(c.body);
+      renderSigs(c.sigs);
+
+      // Sync toolbar active states
+      document.querySelectorAll('.size-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.size === this.sizeMode);
+      });
+      document.querySelectorAll('.color-btn[data-bg]').forEach(b => {
+        b.classList.toggle('active', b.dataset.bg === this.cardStock);
+      });
+
+      this.persistState();
+    },
+
     // ── Format panel methods ──
-    setFontScale(v)    { this.fontScale = +v;    applyCSSVars(this); save('fontScale', v);    adjustSpacing(); },
-    setSpacing(v)      { this.spacingScale = +v; applyCSSVars(this); save('spacingScale', v); adjustSpacing(); },
-    setBorderMargin(v) { this.borderMargin = +v; applyCSSVars(this); save('borderMargin', v); adjustSpacing(); },
+    setFontScale(v)    { this.fontScale = +v;    applyCSSVars(this); adjustSpacing(); this.persistState(); },
+    setSpacing(v)      { this.spacingScale = +v; applyCSSVars(this); adjustSpacing(); this.persistState(); },
+    setBorderMargin(v) { this.borderMargin = +v; applyCSSVars(this); adjustSpacing(); this.persistState(); },
 
     setPalette(i) {
       this.paletteIndex = +i;
       this.cardStock = PALETTES[i].cream;
       applyCSSVars(this);
-      save('paletteIndex', i);
-      save('bg', this.cardStock);
+      this.persistState();
       document.querySelectorAll('.color-btn[data-bg]').forEach(b => {
         b.classList.toggle('active', b.dataset.bg === this.cardStock);
       });
@@ -64,50 +142,63 @@ export function initStore() {
     setFontPair(i) {
       this.fontPairIndex = +i;
       applyFontPair(FONT_PAIRS[i]);
-      save('fontPairIndex', i);
+      this.persistState();
     },
 
-    setSizeMode(mode) { applyMode(this, mode); save('size_mode', mode); },
+    setSizeMode(mode) { applyMode(this, mode); this.persistState(); },
 
     setCardStock(color) {
       this.cardStock = color;
       applyCSSVars(this);
-      save('bg', color);
+      this.persistState();
     },
 
     togglePanel() { this.panelOpen = !this.panelOpen; },
 
     addSig() {
-      if (this.sigData.length >= 3) return;
-      this.sigData.push({ name: 'Name', title: 'Title, Springfield VFD' });
-      renderSigs(this.sigData);
-      save('sigs', JSON.stringify(this.sigData));
+      if (this.content.sigs.length >= 3) return;
+      this.content.sigs = [...this.content.sigs, { name: 'Name', title: 'Title, Springfield VFD' }];
+      renderSigs(this.content.sigs);
+      this.persistState();
     },
 
     removeSig() {
-      if (this.sigData.length <= 1) return;
-      this.sigData.pop();
-      renderSigs(this.sigData);
-      save('sigs', JSON.stringify(this.sigData));
+      if (this.content.sigs.length <= 1) return;
+      this.content.sigs = this.content.sigs.slice(0, -1);
+      renderSigs(this.content.sigs);
+      this.persistState();
     },
 
     init() {
-      // Apply all persisted format settings
+      const saved = loadState();
+      if (saved) {
+        // Merge saved state over defaults (handles partial files)
+        this.content = { ...DEFAULT_CERT_DATA.content, ...saved.content };
+        const f = { ...DEFAULT_CERT_DATA.format, ...saved.format };
+        this.fontScale     = +f.fontScale;
+        this.spacingScale  = +f.spacingScale;
+        this.borderMargin  = +f.borderMargin;
+        this.fontPairIndex = +f.fontPairIndex;
+        this.paletteIndex  = +f.paletteIndex;
+        this.sizeMode      = f.sizeMode;
+        this.cardStock     = f.cardStock;
+      }
+
+      // Apply CSS and layout
       applyCSSVars(this);
       applyFontPair(FONT_PAIRS[this.fontPairIndex]);
       applyMode(this, this.sizeMode);
-      renderSigs(this.sigData);
 
-      // Restore text content fields
-      document.querySelector('.doc-title').textContent      = load('title',        'Certificate of Recognition');
-      document.querySelector('.recipient-name').textContent = load('recipient',    'Jimmy Smith');
-      document.querySelector('.org-name').textContent       = load('org_name',     'Springfield Volunteer Fire Department');
-      document.querySelector('.presented-by').textContent   = load('presented_by', 'Presented by the Volunteer Fire Department');
-      document.querySelector('.cert-date').textContent      = load('date',         getTodayDate());
+      // Populate DOM from content
+      document.querySelector('.doc-title').textContent      = this.content.title;
+      document.querySelector('.recipient-name').textContent = this.content.recipient;
+      document.querySelector('.org-name').textContent       = this.content.orgName;
+      document.querySelector('.presented-by').textContent   = this.content.presentedBy;
+      document.querySelector('.cert-date').textContent      = this.content.date;
+      document.querySelector('.body-text').innerHTML        = toHTML(this.content.body);
+      renderSigs(this.content.sigs);
 
-      const savedBody = load('body_raw');
-      document.querySelector('.body-text').innerHTML = toHTML(savedBody ?? DEFAULT_BODY);
-
+      // Logo (kept separate from cert_state)
       const savedLogo = load('logo');
       if (savedLogo) document.getElementById('logo-img').src = savedLogo;
 
