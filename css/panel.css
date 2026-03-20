@@ -1,0 +1,233 @@
+/* ─── Format Panel ───────────────────────────────────── */
+.format-panel {
+  position: fixed;
+  top: 54px; right: 0; bottom: 0;
+  width: 240px;
+  background: #161616;
+  border-left: 1px solid #222;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cert area yields space for the panel on desktop */
+@media (min-width: 769px) {
+  .cert-page { padding-right: 240px; }
+}
+
+/* ─── Panel inner structure ──────────────────────────── */
+.panel-handle {
+  display: none;
+}
+
+.panel-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #1e1e1e;
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.panel-body {
+  padding: 12px 16px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.panel-section {
+  margin-bottom: 20px;
+}
+
+.panel-label {
+  font-family: var(--font-body-ff);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: #666;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.panel-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-value {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  color: #aaa;
+  min-width: 38px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ─── Range sliders ──────────────────────────────────── */
+.panel-body input[type="range"] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #2a2a2a;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.panel-body input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid #161616;
+  cursor: pointer;
+}
+
+.panel-body input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid #161616;
+  cursor: pointer;
+}
+
+/* ─── Palette buttons ────────────────────────────────── */
+.palette-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.palette-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  border-radius: 3px;
+  color: #888;
+  font-family: var(--font-body-ff);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.palette-btn::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--p-accent, #888);
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.palette-btn.active {
+  border-color: var(--gold);
+  color: #ccc;
+}
+
+.palette-btn:hover:not(.active) {
+  border-color: #444;
+  color: #aaa;
+}
+
+/* ─── Font pair buttons ──────────────────────────────── */
+.font-pair-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.font-pair-btn {
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  border-radius: 3px;
+  color: #888;
+  font-family: var(--font-body-ff);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.font-pair-btn.active { border-color: var(--gold); color: #ccc; }
+.font-pair-btn:hover:not(.active) { border-color: #444; color: #aaa; }
+
+/* ─── Mobile: bottom sheet ───────────────────────────── */
+@media (max-width: 768px) {
+  .format-panel {
+    top: auto;
+    left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 55vh;
+    max-height: 70vh;
+    border-left: none;
+    border-top: 1px solid #2a2a2a;
+    border-radius: 12px 12px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 150;
+  }
+
+  .format-panel.open {
+    transform: translateY(0);
+  }
+
+  .panel-handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    margin: 10px auto 6px;
+    flex-shrink: 0;
+  }
+
+  .cert-page { padding-right: 0 !important; }
+
+  /* Format trigger button in toolbar (mobile only) */
+  .format-trigger-btn {
+    padding: 5px 11px;
+    background: transparent;
+    border: 1px solid #363636;
+    border-radius: 3px;
+    color: #999;
+    font-family: var(--font-body-ff);
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .format-trigger-btn:hover { border-color: #666; color: #ddd; }
+}
+
+@media (min-width: 769px) {
+  .format-trigger-btn { display: none; }
+}
+
+/* ─── Mobile overlay backdrop ────────────────────────── */
+.panel-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 140;
+}
+
+@media (max-width: 768px) {
+  .panel-backdrop.open { display: block; }
+}
