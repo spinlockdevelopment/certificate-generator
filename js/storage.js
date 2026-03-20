@@ -11,7 +11,10 @@ export function load(field, fallback = null) {
   return v !== null ? v : fallback;
 }
 
+// Persists full { content, format } state — matches DEFAULT_CERT_DATA shape.
+// Caller is responsible for merging field-level defaults before passing the blob.
 export function persistState(blob) {
+  if (blob == null) return;
   try { localStorage.setItem('cert_state', JSON.stringify(blob)); } catch(e) {}
 }
 
