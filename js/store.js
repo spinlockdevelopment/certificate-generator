@@ -192,10 +192,7 @@ export function initStore() {
       const savedLogo = load('logo');
       if (savedLogo) document.getElementById('logo-img').src = savedLogo;
 
-      // Sync toolbar button active states
-      document.querySelectorAll('.size-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.size === this.sizeMode);
-      });
+      // Sync card stock active state (size-btn state is handled by applyMode above)
       document.querySelectorAll('.color-btn[data-bg]').forEach(b => {
         b.classList.toggle('active', b.dataset.bg === this.cardStock);
       });

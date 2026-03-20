@@ -38,7 +38,7 @@ export const DEFAULT_CERT_DATA = {
       { name: 'Name', title: 'Title, Springfield VFD' },
       { name: 'Name', title: 'Title, Springfield VFD' },
     ],
-    logoName:    'vfd_logo.png',
+    // logoName omitted — logo is stored separately (cert_default_logo key) and not part of the save/load blob
   },
   format: {
     fontScale:     1,
