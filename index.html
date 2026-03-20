@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;1,400&family=Libre+Caslon+Text:wght@400;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/toolbar.css">
@@ -54,6 +54,10 @@
     <button class="color-btn size-btn" data-size="8x10">8 &times; 10</button>
     <button class="color-btn size-btn active" data-size="85x11">8.5 &times; 11</button>
   </div>
+
+  <button class="format-trigger-btn"
+          @click="$store.cert.togglePanel()"
+          x-data>Format</button>
 
   <div class="print-btn-wrap">
     <button class="print-btn" id="print-btn">Print Certificate</button>
@@ -135,6 +139,93 @@
     </div><!-- /cert-scale -->
   </div><!-- /cert-outer -->
 </div><!-- /cert-page -->
+
+<!-- ─── Panel backdrop (mobile only) ─────────────────── -->
+<div class="panel-backdrop"
+     :class="{ open: $store.cert.panelOpen }"
+     @click="$store.cert.togglePanel()"
+     x-data></div>
+
+<!-- ─── Format panel ──────────────────────────────────── -->
+<div class="format-panel"
+     :class="{ open: $store.cert.panelOpen }"
+     x-data>
+
+  <div class="panel-handle"></div>
+
+  <div class="panel-header">
+    <span class="panel-title">Format</span>
+  </div>
+
+  <div class="panel-body">
+
+    <!-- Font Scale -->
+    <div class="panel-section">
+      <div class="panel-label">Font Scale</div>
+      <div class="panel-row">
+        <input type="range" min="0.75" max="1.5" step="0.05"
+               :value="$store.cert.fontScale"
+               @input="$store.cert.setFontScale($event.target.value)">
+        <span class="panel-value"
+              x-text="Math.round($store.cert.fontScale * 100) + '%'"></span>
+      </div>
+    </div>
+
+    <!-- Spacing -->
+    <div class="panel-section">
+      <div class="panel-label">Spacing</div>
+      <div class="panel-row">
+        <input type="range" min="0.6" max="1.8" step="0.1"
+               :value="$store.cert.spacingScale"
+               @input="$store.cert.setSpacing($event.target.value)">
+        <span class="panel-value"
+              x-text="(+$store.cert.spacingScale).toFixed(1) + 'x'"></span>
+      </div>
+    </div>
+
+    <!-- Border Margin -->
+    <div class="panel-section">
+      <div class="panel-label">Border Margin</div>
+      <div class="panel-row">
+        <input type="range" min="30" max="90" step="1"
+               :value="$store.cert.borderMargin"
+               @input="$store.cert.setBorderMargin($event.target.value)">
+        <span class="panel-value"
+              x-text="$store.cert.borderMargin + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Color Palette -->
+    <div class="panel-section">
+      <div class="panel-label">Color Palette</div>
+      <div class="palette-grid">
+        <template x-for="(p, i) in $store.cert.palettes" :key="i">
+          <button class="palette-btn"
+                  :class="{ active: i === $store.cert.paletteIndex }"
+                  :style="`--p-accent:${p.accent}`"
+                  @click="$store.cert.setPalette(i)"
+                  x-text="p.name">
+          </button>
+        </template>
+      </div>
+    </div>
+
+    <!-- Font Style -->
+    <div class="panel-section">
+      <div class="panel-label">Font Style</div>
+      <div class="font-pair-list">
+        <template x-for="(pair, i) in $store.cert.fontPairs" :key="i">
+          <button class="font-pair-btn"
+                  :class="{ active: i === $store.cert.fontPairIndex }"
+                  @click="$store.cert.setFontPair(i)"
+                  x-text="pair.name">
+          </button>
+        </template>
+      </div>
+    </div>
+
+  </div><!-- /panel-body -->
+</div><!-- /format-panel -->
 
 <!-- Emphasis hint — lives outside .cert so overflow:hidden can't clip it -->
 <div class="hint-popup" id="hint-popup">
