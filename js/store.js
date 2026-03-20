@@ -8,7 +8,7 @@ function getTodayDate() {
   return new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-function setMode(store, mode) {
+function applyMode(store, mode) {
   store.sizeMode = mode;
   const m = SIZE_MODES[mode];
   document.documentElement.style.setProperty('--w', m.w + 'px');
@@ -19,9 +19,11 @@ function setMode(store, mode) {
     '  .cert-outer { width: ' + m.certW + ' !important; height: ' + m.certH + ' !important; }\n' +
     '  .cert        { width: ' + m.certW + ' !important; height: ' + m.certH + ' !important; }\n' +
     '}';
-  save('size_mode', mode);
   scaleCert(mode);
   adjustSpacing();
+  document.querySelectorAll('.size-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.size === mode);
+  });
 }
 
 export function initStore() {
@@ -35,7 +37,7 @@ export function initStore() {
 
     // ── Toolbar state (migrated from inline script) ──
     sizeMode:  load('size_mode', '85x11'),
-    cardStock: load('bg',        '#FDFAF2'),
+    cardStock: load('bg',        PALETTES[0].cream),
     sigData:   JSON.parse(load('sigs', JSON.stringify(DEFAULT_SIGS))),
     panelOpen: false,
 
@@ -65,7 +67,7 @@ export function initStore() {
       save('fontPairIndex', i);
     },
 
-    setSizeMode(mode) { setMode(this, mode); },
+    setSizeMode(mode) { applyMode(this, mode); save('size_mode', mode); },
 
     setCardStock(color) {
       this.cardStock = color;
@@ -93,7 +95,7 @@ export function initStore() {
       // Apply all persisted format settings
       applyCSSVars(this);
       applyFontPair(FONT_PAIRS[this.fontPairIndex]);
-      setMode(this, this.sizeMode);
+      applyMode(this, this.sizeMode);
       renderSigs(this.sigData);
 
       // Restore text content fields

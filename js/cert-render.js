@@ -1,6 +1,5 @@
 // js/cert-render.js
-import { SIZE_MODES, PALETTES, FONT_PAIRS } from './config.js';
-import { save } from './storage.js';
+import { SIZE_MODES, PALETTES } from './config.js';
 
 export function applyCSSVars(state) {
   const r = document.documentElement.style;
