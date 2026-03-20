@@ -45,34 +45,15 @@ export function initStore() {
 
     // ── Persist entire state to one localStorage blob ──
     persistState() {
-      storagePersist({
-        content: this.content,
-        format: {
-          fontScale:     this.fontScale,
-          spacingScale:  this.spacingScale,
-          borderMargin:  this.borderMargin,
-          fontPairIndex: this.fontPairIndex,
-          paletteIndex:  this.paletteIndex,
-          cardStock:     this.cardStock,
-          sizeMode:      this.sizeMode,
-        },
-      });
+      storagePersist({ content: this.content, format: this._formatSnapshot() });
     },
 
     // ── Save current state to a .json file ──
     saveCertToFile() {
-      const json = JSON.stringify({
-        content: this.content,
-        format: {
-          fontScale:     this.fontScale,
-          spacingScale:  this.spacingScale,
-          borderMargin:  this.borderMargin,
-          fontPairIndex: this.fontPairIndex,
-          paletteIndex:  this.paletteIndex,
-          cardStock:     this.cardStock,
-          sizeMode:      this.sizeMode,
-        },
-      }, null, 2);
+      const json = JSON.stringify(
+        { content: this.content, format: this._formatSnapshot() },
+        null, 2
+      );
       const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
       const a = document.createElement('a');
       a.href = url;
@@ -114,9 +95,6 @@ export function initStore() {
       renderSigs(c.sigs);
 
       // Sync toolbar active states
-      document.querySelectorAll('.size-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.size === this.sizeMode);
-      });
       document.querySelectorAll('.color-btn[data-bg]').forEach(b => {
         b.classList.toggle('active', b.dataset.bg === this.cardStock);
       });
@@ -154,6 +132,18 @@ export function initStore() {
     },
 
     togglePanel() { this.panelOpen = !this.panelOpen; },
+
+    _formatSnapshot() {
+      return {
+        fontScale:     this.fontScale,
+        spacingScale:  this.spacingScale,
+        borderMargin:  this.borderMargin,
+        fontPairIndex: this.fontPairIndex,
+        paletteIndex:  this.paletteIndex,
+        cardStock:     this.cardStock,
+        sizeMode:      this.sizeMode,
+      };
+    },
 
     addSig() {
       if (this.content.sigs.length >= 3) return;

@@ -51,6 +51,3 @@ export const DEFAULT_CERT_DATA = {
   },
 };
 
-// Temporary shims — removed when store.js is rewritten in Task 3
-export const DEFAULT_BODY = DEFAULT_CERT_DATA.content.body;
-export const DEFAULT_SIGS = DEFAULT_CERT_DATA.content.sigs;
