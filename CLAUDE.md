@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A single-file HTML certificate of recognition for Jimmy Smith of the Springfield Volunteer Fire Department. Presentation date: **March 18, 2026**. Print target: **8.5" × 11"** (full-page) or **8" × 10"** (centered on 8.5×11 for mat framing), selectable via toolbar toggle.
 
-**Single deliverable:** `index.html` — no build system, no dependencies except Google Fonts CDN.
+**Deliverables:** `index.html` + `css/` + `js/` — no build step, no dependencies except Google Fonts CDN and Alpine.js CDN.
 
 ## Viewing & Printing
 
@@ -27,12 +27,16 @@ Fonts: **Cinzel** (display/headings, weights 400/600/700) + **EB Garamond** (bod
 ## Architecture
 
 - Layout: `position: absolute` inside fixed `.cert` container — screen dimensions driven by `--w`/`--h` CSS variables set by JS
-- Two size modes in `SIZE_MODES` (JS): `85x11` (816×1056px / 8.5in×11in, no margin) and `8x10` (768×960px / 8in×10in, centered on 8.5×11 via 0.5in/0.25in margins)
-- `@media print` static block handles everything except `@page` and cert dimensions; those are written dynamically into `<style id="print-size">` by `setMode()` on each toggle
-- Selected size mode is saved to `localStorage` under key `cert_default_size_mode`
-- Parchment texture: inline SVG `feTurbulence` data URIs — renders on screen, stripped on print via `background-image: none !important`
+- Two size modes in `SIZE_MODES` (`js/config.js`): `85x11` (816×1056px) and `8x10` (768×960px); `applyMode()` in `js/store.js` handles CSS/scaling; `setSizeMode()` adds persistence
+- **CSS variables:** All design tokens in `css/base.css` `:root`. Format panel sliders write `--font-scale`, `--spacing-scale`, `--border-margin` directly via `applyCSSVars()` in `js/cert-render.js`; derived `--fs-*` and `--mb-*` tokens update via `calc()` automatically
+- **Alpine.js v3** (CDN): `Alpine.store('cert')` in `js/store.js` is the single source of truth for all state — format settings, toolbar controls, signatures, panel open state
+- **File structure:** `css/` (base, cert, toolbar, panel, print) + `js/` (config, storage, cert-render, body-text, store)
+- **Format panel:** Always-visible 240px right rail on desktop (≥769px); bottom sheet toggled by Format button on mobile (<769px). `scaleCert()` in `js/cert-render.js` subtracts panel width on desktop.
+- **Color palettes** and **font pairs** defined in `js/config.js`. All 5 font pairs loaded upfront from Google Fonts to avoid FOUT on font swap.
+- `@media print` static block in `css/print.css`; `@page` and cert print dimensions written dynamically to `<style id="print-size">` by `applyMode()` on each toggle
 - `print-color-adjust: exact` applied to borders and corners for color-critical print rendering
-- No external images. No frameworks.
+- Parchment texture: inline SVG `feTurbulence` data URIs — renders on screen, stripped on print via `background-image: none !important`
+- No external images (except optional `vfd_logo.png`). No build step. Works on GitHub Pages via ES modules served over HTTP.
 
 ## Logo
 

@@ -1,0 +1,91 @@
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── Variables ──────────────────────────────────────── */
+:root {
+  /* Colors */
+  --accent:      #8B0000;
+  --accent-lt:   #A52020;
+  --gold:        #B8953A;
+  --cream:       #FDFAF2;
+  --ink:         #1A1A1A;
+  --ink-mid:     #3A3330;
+  --ink-muted:   #6B6560;
+
+  /* Border margin (driven by Spacing tab slider) */
+  --border-margin: 63px;
+
+  /* Individual font size scales (driven by Size tab sliders) */
+  --logo-scale: 1;
+  --fs-org-scale: 1;
+  --fs-title-scale: 1;
+  --fs-recipient-scale: 1;
+  --fs-body-scale: 1;
+  --fs-presented-to-scale: 1;
+  --fs-sig-scale: 1;
+  --fs-presented-by-scale: 1;
+  --fs-date-scale: 1;
+
+  /* Derived font sizes */
+  --fs-org:          calc(13px   * var(--fs-org-scale));
+  --fs-title:        calc(22px   * var(--fs-title-scale));
+  --fs-recipient:    calc(38px   * var(--fs-recipient-scale));
+  --fs-body:         calc(17.5px * var(--fs-body-scale));
+  --fs-presented-to: calc(15px   * var(--fs-presented-to-scale));
+  --fs-sig-name:     calc(11px   * var(--fs-sig-scale));
+  --fs-sig-title:    calc(11.5px * var(--fs-sig-scale));
+  --fs-presented-by: calc(10px   * var(--fs-presented-by-scale));
+  --fs-date:         calc(14px   * var(--fs-date-scale));
+
+  /* Spacing (driven by Spacing tab — individual px values set by JS) */
+  --sp-logo:               20px;
+  --sp-org:                10px;
+  --sp-title:              12px;
+  --sp-presented-to-offset: 0px;
+  --sp-recipient:           6px;
+  --sp-para-above-hr:      16px;
+  --sp-para-below-hr:      16px;
+  --sp-para-hr-below:      16px;
+  --sp-sig:                19px;
+  --sp-presented-by:       12px;
+  --sp-date:               10px;
+
+  /* Rule gap (fixed) */
+  --gap-rules: 3px;
+
+  /* Font families (swapped by font pair selector) */
+  --font-heading: 'Cinzel', Georgia, serif;
+  --font-body-ff: 'EB Garamond', Georgia, serif;
+
+  /* Cert dimensions (overwritten by JS setMode()) */
+  --w: 816px;
+  --h: 1056px;
+}
+
+/* ─── Generator shell ────────────────────────────────── */
+body {
+  background: #1e1e1e;
+  min-height: 100vh;
+  font-family: 'EB Garamond', Georgia, serif;
+  overflow-x: hidden;
+}
+
+/* ─── Page / cert wrapper ────────────────────────────── */
+.cert-page {
+  margin-top: 54px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 28px 20px 48px;
+  min-height: calc(100vh - 54px);
+}
+
+.cert-outer {
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 50px rgba(0,0,0,0.75);
+}
+
+.cert-scale {
+  transform-origin: top left;
+}

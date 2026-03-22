@@ -7,527 +7,13 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;1,400&family=Libre+Caslon+Text:wght@400;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
-<style>
-  /* ─── Reset ─────────────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  /* ─── Variables ──────────────────────────────────────── */
-  :root {
-    --crimson:   #8B0000;
-    --crimson-lt:#A52020;
-    --ink:       #1A1A1A;
-    --ink-mid:   #3A3330;
-    --ink-muted: #6B6560;
-    --cream:     #FDFAF2;
-    --gold:      #B8953A;
-    --w: 816px;
-    --h: 1056px;
-  }
-
-  /* ─── Generator shell ────────────────────────────────── */
-  body {
-    background: #1e1e1e;
-    min-height: 100vh;
-    font-family: 'EB Garamond', Georgia, serif;
-    overflow-x: hidden;
-  }
-
-  /* ─── Toolbar ────────────────────────────────────────── */
-  .toolbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 54px;
-    background: #111;
-    border-bottom: 1px solid #2a2a2a;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    gap: 14px;
-    z-index: 200;
-  }
-
-  .toolbar-brand {
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    color: var(--gold);
-    text-transform: uppercase;
-    white-space: nowrap;
-    margin-right: 4px;
-  }
-
-  .toolbar-divider {
-    width: 1px;
-    height: 26px;
-    background: #2e2e2e;
-    flex-shrink: 0;
-  }
-
-  .toolbar-group {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .toolbar-label {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: 11px;
-    color: #666;
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-  }
-
-  /* Card stock color buttons */
-  .color-btn {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 9px 4px 6px;
-    background: transparent;
-    border: 1px solid #363636;
-    border-radius: 3px;
-    color: #999;
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: 12px;
-    cursor: pointer;
-    transition: border-color 0.12s, color 0.12s;
-    white-space: nowrap;
-  }
-  .color-btn:hover { border-color: #666; color: #ddd; }
-  .color-btn.active { border-color: var(--gold); color: var(--gold); }
-
-  .swatch {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.12);
-    display: inline-block;
-    flex-shrink: 0;
-  }
-
-  /* Signature counter */
-  .sig-counter { display: flex; align-items: center; gap: 5px; }
-
-  .sig-btn {
-    width: 22px;
-    height: 22px;
-    background: transparent;
-    border: 1px solid #363636;
-    border-radius: 3px;
-    color: #999;
-    font-size: 15px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.12s, color 0.12s;
-    padding-bottom: 1px;
-  }
-  .sig-btn:hover:not(:disabled) { border-color: #666; color: #ddd; }
-  .sig-btn:disabled { opacity: 0.25; cursor: default; }
-
-  .sig-count-display {
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 13px;
-    color: #aaa;
-    min-width: 14px;
-    text-align: center;
-  }
-
-  /* Print button + tooltip */
-  .print-btn-wrap {
-    margin-left: auto;
-    position: relative;
-    flex-shrink: 0;
-  }
-  .print-tip {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 9px);
-    right: 0;
-    background: #1e1e1e;
-    border: 1px solid #3a3a3a;
-    color: #b0b0b0;
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: 11.5px;
-    line-height: 1.5;
-    padding: 8px 12px;
-    border-radius: 3px;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 300;
-  }
-  .print-tip strong { color: #ddd; font-style: normal; }
-  .print-btn-wrap:hover .print-tip { display: block; }
-
-  .print-btn {
-    padding: 7px 18px;
-    background: var(--crimson);
-    border: none;
-    border-radius: 3px;
-    color: #f5e8e8;
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.12s;
-    white-space: nowrap;
-  }
-  .print-btn:hover { background: var(--crimson-lt); }
-
-  /* ─── Page / cert wrapper ────────────────────────────── */
-  .cert-page {
-    margin-top: 54px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 28px 20px 48px;
-    min-height: calc(100vh - 54px);
-  }
-
-  .cert-outer {
-    /* width/height set by JS */
-    flex-shrink: 0;
-    overflow: hidden;
-    box-shadow: 0 10px 50px rgba(0,0,0,0.75);
-  }
-
-  .cert-scale {
-    transform-origin: top left;
-    /* transform: scale(X) set by JS */
-  }
-
-  /* ─── Certificate card ───────────────────────────────── */
-  .cert {
-    width: var(--w);
-    height: var(--h);
-    position: relative;
-    background-color: var(--cream);
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.15' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.025'/%3E%3C/svg%3E");
-    overflow: hidden;
-  }
-
-  /* ─── Corner ornaments ───────────────────────────────── */
-  .cert::before, .cert::after {
-    content: '';
-    position: absolute;
-    width: 60px; height: 60px;
-    border-color: var(--crimson);
-    border-style: solid;
-  }
-  .cert::before { top: 63px; left: 63px; border-width: 2px 0 0 2px; }
-  .cert::after  { bottom: 63px; right: 63px; border-width: 0 2px 2px 0; }
-
-  .corner-tl-alt, .corner-br-alt {
-    position: absolute;
-    width: 60px; height: 60px;
-    border-color: var(--crimson);
-    border-style: solid;
-  }
-  .corner-tl-alt { top: 63px; right: 63px; border-width: 2px 2px 0 0; }
-  .corner-br-alt { bottom: 63px; left: 63px; border-width: 0 0 2px 2px; }
-
-  /* ─── Double border ──────────────────────────────────── */
-  .border-outer { position: absolute; inset: 55px; border: 1.5px solid var(--crimson); pointer-events: none; }
-  .border-inner { position: absolute; inset: 66px; border: 0.5px solid var(--crimson); pointer-events: none; }
-
-  /* ─── Content area ───────────────────────────────────── */
-  .content {
-    position: absolute;
-    inset: 81px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 32px 11px;
-  }
-
-  /* ─── Top section ────────────────────────────────────── */
-  .top-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  .cross-wrap { margin-bottom: 20px; }
-
-  /* ─── Logo upload overlay ────────────────────────────── */
-  .logo-wrap {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-  }
-  .logo-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.15s;
-    border-radius: 3px;
-  }
-  .logo-wrap:hover .logo-overlay { opacity: 1; }
-  .logo-overlay span {
-    color: #fff;
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 8.5px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-align: center;
-    line-height: 1.6;
-  }
-
-  .org-name {
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.28em;
-    color: var(--crimson);
-    text-transform: uppercase;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  /* ─── Rules ──────────────────────────────────────────── */
-  .rule-set {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    margin-bottom: 12px;
-  }
-  .rule      { width: 88%; border: none; }
-  .rule-thin { border-top: 0.5px solid var(--ink); }
-  .rule-mid  { border-top: 1px solid var(--crimson); width: 80%; }
-  .rule-gold { border-top: 0.75px solid var(--gold); width: 72%; }
-  .rule-sm   { width: 55%; border-top: 0.5px solid var(--ink-muted); }
-
-  /* ─── Document title ─────────────────────────────────── */
-  .doc-title {
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    color: var(--ink);
-    text-align: center;
-    margin-bottom: 12px;
-    line-height: 1.2;
-  }
-
-  /* ─── Middle section ─────────────────────────────────── */
-  .mid-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  .presented-to {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-style: italic;
-    font-size: 15px;
-    color: var(--ink-muted);
-    letter-spacing: 0.06em;
-    margin-bottom: 6px;
-  }
-
-  .recipient-name {
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 38px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: 0.05em;
-    text-align: center;
-    line-height: 1.15;
-    margin-bottom: 18px;
-  }
-
-  /* ─── Ornamental divider ─────────────────────────────── */
-  .orn-divider {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .orn-line    { width: 60px; height: 0.75px; background: var(--crimson); }
-  .orn-dot     { width: 6px; height: 6px; border-radius: 50%; background: var(--crimson); }
-  .orn-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
-
-  /* ─── Body text ──────────────────────────────────────── */
-  .body-text {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: 17.5px;
-    line-height: 1.75;
-    color: var(--ink-mid);
-    text-align: center;
-    width: 88%;
-    margin-bottom: 16px;
-  }
-  .body-text em { font-style: italic; color: var(--ink); }
-
-  /* Emphasis hint — fixed overlay, shown via JS when body text is focused */
-  .hint-popup {
-    display: none;
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 14%;
-    background: #ffffff;
-    color: #111111;
-    border: 2px solid #1a1a1a;
-    border-radius: 8px;
-    padding: 16px 28px;
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: 16px;
-    line-height: 1.7;
-    text-align: center;
-    white-space: nowrap;
-    z-index: 500;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.22);
-    pointer-events: none;
-  }
-  .hint-popup.visible { display: block; }
-  .hint-popup-label {
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: #555;
-    display: block;
-    margin-bottom: 6px;
-  }
-  .hint-popup em { color: #8B0000; font-style: italic; }
-
-  /* ─── Bottom section ─────────────────────────────────── */
-  .bottom-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  /* ─── Signature block ────────────────────────────────── */
-  .sig-block {
-    display: flex;
-    justify-content: space-between;
-    width: 92%;
-    margin-bottom: 19px;
-    margin-top: 4px;
-  }
-  .sig-block.count-1 { justify-content: center; }
-  .sig-block.count-1 .sig-unit { width: 56%; }
-  .sig-block.count-2 .sig-unit { width: 44%; }
-  .sig-block.count-3 .sig-unit { width: 30%; }
-
-  .sig-unit { display: flex; flex-direction: column; align-items: center; }
-
-  .sig-line {
-    width: 100%;
-    border-top: 0.8px solid var(--ink);
-    margin-bottom: 5px;
-  }
-  .sig-name {
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--ink);
-    letter-spacing: 0.08em;
-    text-align: center;
-  }
-  .sig-title {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-style: italic;
-    font-size: 11.5px;
-    color: var(--ink-muted);
-    text-align: center;
-    margin-top: 1px;
-  }
-
-  /* ─── Presented by / date ────────────────────────────── */
-  .presented-by {
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    color: var(--ink-muted);
-    text-align: center;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .cert-date {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-style: italic;
-    font-size: 14px;
-    color: var(--ink-mid);
-    letter-spacing: 0.05em;
-    margin-bottom: 10px;
-  }
-
-  /* ─── Gold accent bar ────────────────────────────────── */
-  .gold-bar {
-    width: 40%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold), transparent);
-    margin-bottom: 3px;
-  }
-
-  /* ─── Editable field styles ──────────────────────────── */
-  [contenteditable] { outline: none; cursor: text; }
-  [contenteditable]:hover { box-shadow: 0 0 0 1.5px rgba(184,149,58,0.2); border-radius: 1px; }
-  [contenteditable]:focus { box-shadow: 0 0 0 1.5px rgba(184,149,58,0.45); border-radius: 1px; }
-
-  /* ══════════════════════════════════════════════════════
-     PRINT STYLES
-  ══════════════════════════════════════════════════════ */
-  @media print {
-    body { background: none !important; margin: 0; padding: 0; display: block; }
-
-    .toolbar { display: none !important; }
-
-    .cert-page { margin-top: 0; padding: 0; min-height: 0; display: block; }
-
-    .cert-outer {
-      box-shadow: none !important;
-      overflow: visible !important;
-      margin: 0 auto;
-    }
-
-    .cert-scale { transform: none !important; }
-
-    .cert {
-      background: none !important;
-      box-shadow: none !important;
-      page-break-inside: avoid;
-    }
-
-    [contenteditable]:hover,
-    [contenteditable]:focus { box-shadow: none !important; }
-
-    .hint-popup { display: none !important; }
-
-    .border-outer, .border-inner,
-    .cert::before, .cert::after,
-    .corner-tl-alt, .corner-br-alt {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-  }
-</style>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/toolbar.css">
+<link rel="stylesheet" href="css/cert.css">
+<link rel="stylesheet" href="css/print.css">
+<link rel="stylesheet" href="css/panel.css">
 <style id="print-size">/* injected by setMode() */</style>
 </head>
 <body>
@@ -536,43 +22,54 @@
 <div class="toolbar">
 
   <span class="toolbar-brand">Certificate Generator</span>
-  <div class="toolbar-divider"></div>
 
-  <div class="toolbar-group">
-    <span class="toolbar-label">Card Stock</span>
-    <button class="color-btn active" data-bg="#FDFAF2">
-      <span class="swatch" style="background:#FDFAF2;"></span>Ivory
-    </button>
-    <button class="color-btn" data-bg="#FAFAF7">
-      <span class="swatch" style="background:#FAFAF7;"></span>Off-White
-    </button>
-    <button class="color-btn" data-bg="#FFFFFF">
-      <span class="swatch" style="background:#FFFFFF; border-color:rgba(255,255,255,0.35);"></span>White
-    </button>
-  </div>
-  <div class="toolbar-divider"></div>
+  <button class="format-trigger-btn"
+          @click="$store.cert.togglePanel()"
+          x-data>Format</button>
 
-  <div class="toolbar-group">
-    <span class="toolbar-label">Signatures</span>
-    <div class="sig-counter">
-      <button class="sig-btn" id="sig-remove" title="Remove signature">&#8722;</button>
-      <span class="sig-count-display" id="sig-count">2</span>
-      <button class="sig-btn" id="sig-add" title="Add signature">&#43;</button>
+  <div class="toolbar-right">
+    <div class="toolbar-group">
+      <span class="toolbar-label">Card Stock</span>
+      <div class="tb-dropdown" id="cardstock-dropdown">
+        <button class="tb-dropdown-btn" id="cardstock-btn">
+          <span class="swatch" id="cardstock-swatch" style="background:#FDFAF2;"></span>
+          <span id="cardstock-label">Ivory</span>
+          <svg class="tb-chevron" width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M0.5 0.5L4 4L7.5 0.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="tb-dropdown-menu" id="cardstock-menu">
+          <button class="tb-dropdown-item active" data-bg="#FDFAF2">
+            <span class="swatch" style="background:#FDFAF2;"></span>Ivory
+          </button>
+          <button class="tb-dropdown-item" data-bg="#FAFAF8">
+            <span class="swatch" style="background:#FAFAF8; border-color:rgba(0,0,0,0.08);"></span>Paper White
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="toolbar-divider"></div>
 
-  <div class="toolbar-group">
-    <span class="toolbar-label">Print Size</span>
-    <button class="color-btn size-btn" data-size="8x10">8 &times; 10</button>
-    <button class="color-btn size-btn active" data-size="85x11">8.5 &times; 11</button>
-  </div>
-
-  <div class="print-btn-wrap">
-    <button class="print-btn" id="print-btn">Print Certificate</button>
-    <div class="print-tip">
-      In print dialog: <strong>More settings</strong> &rarr; uncheck <strong>Headers and footers</strong> &rarr; Margins: <strong>None</strong>
+    <div class="print-split-wrap" id="print-split">
+      <div class="print-tip">
+        In print dialog: <strong>More settings</strong> &rarr; uncheck <strong>Headers and footers</strong> &rarr; Margins: <strong>None</strong>
+      </div>
+      <button class="print-btn" id="print-btn">Print Certificate</button>
+      <button class="print-arrow-btn" id="print-arrow-btn" title="Save / Load">
+        <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M0.5 0.5L4 4L7.5 0.5" stroke="#f5e8e8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="print-dropdown-menu" id="print-menu">
+        <button class="print-menu-item" id="save-cert-btn">
+          <span class="menu-icon">&#8595;</span>Save Certificate
+        </button>
+        <button class="print-menu-item" id="load-cert-btn">
+          <span class="menu-icon">&#8593;</span>Load Certificate
+        </button>
+        <div class="print-menu-divider"></div>
+        <button class="print-menu-item" id="reset-all-btn">
+          <span class="menu-icon">&#8635;</span>Reset All
+        </button>
+      </div>
     </div>
+
+    <input type="file" id="load-cert-input" accept=".json" style="display:none;">
   </div>
 
 </div>
@@ -590,7 +87,7 @@
 
         <div class="content">
 
-          <!-- TOP — logo + org name are static -->
+          <!-- TOP — logo + org name -->
           <div class="top-section">
             <div class="cross-wrap">
               <div class="logo-wrap" id="logo-wrap">
@@ -633,12 +130,12 @@
               <hr class="rule rule-sm">
             </div>
             <div class="sig-block count-2"></div>
-            <div class="rule-set" style="margin-bottom:12px;">
+            <div class="rule-set rule-set-bottom">
               <hr class="rule rule-gold">
               <hr class="rule rule-mid">
               <hr class="rule rule-thin">
             </div>
-            <div class="presented-by" contenteditable="true" spellcheck="false">Presented by the Volunteer Fire Department</div>
+            <div class="presented-by" contenteditable="true" spellcheck="false">Presented by Springfield Volunteer Fire Department</div>
             <div class="cert-date" contenteditable="true" spellcheck="false"></div>
             <div class="gold-bar"></div>
           </div>
@@ -649,6 +146,290 @@
   </div><!-- /cert-outer -->
 </div><!-- /cert-page -->
 
+<!-- ─── Panel backdrop (mobile only) ─────────────────── -->
+<div class="panel-backdrop"
+     :class="{ open: $store.cert.panelOpen }"
+     @click="$store.cert.togglePanel()"
+     x-data></div>
+
+<!-- ─── Format panel ──────────────────────────────────── -->
+<div class="format-panel"
+     :class="{ open: $store.cert.panelOpen }"
+     x-data>
+
+  <div class="panel-handle"></div>
+
+  <!-- Tab bar -->
+  <div class="panel-tabs">
+    <button class="panel-tab"
+            :class="{ active: $store.cert.activeTab === 'style' }"
+            @click="$store.cert.activeTab = 'style'">Style</button>
+    <button class="panel-tab"
+            :class="{ active: $store.cert.activeTab === 'size' }"
+            @click="$store.cert.activeTab = 'size'">Size</button>
+    <button class="panel-tab"
+            :class="{ active: $store.cert.activeTab === 'spacing' }"
+            @click="$store.cert.activeTab = 'spacing'">Spacing</button>
+  </div>
+
+  <!-- ═══ Style Tab ═══ -->
+  <div class="panel-body" x-show="$store.cert.activeTab === 'style'">
+
+    <div class="panel-section">
+      <div class="panel-label">Font Style</div>
+      <select class="panel-select">
+        <option>Classic</option>
+      </select>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Color Palette</div>
+      <select class="panel-select">
+        <option>Crimson &amp; Gold</option>
+      </select>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Border Style</div>
+      <select class="panel-select">
+        <option>Classic</option>
+      </select>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Print Size</div>
+      <select class="panel-select"
+              x-effect="$el.value = $store.cert.sizeMode"
+              @change="$store.cert.setSizeMode($event.target.value)">
+        <option value="85x11">8.5 &times; 11</option>
+        <option value="8x10">8 &times; 10</option>
+      </select>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Signatures</div>
+      <div class="sig-counter">
+        <button class="sig-btn"
+                @click="$store.cert.removeSig()"
+                :disabled="$store.cert.content.sigs.length <= 1">&#8722;</button>
+        <span class="sig-count-display"
+              x-text="$store.cert.content.sigs.length"></span>
+        <button class="sig-btn"
+                @click="$store.cert.addSig()"
+                :disabled="$store.cert.content.sigs.length >= 3">&#43;</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ Size Tab ═══ -->
+  <div class="panel-body" x-show="$store.cert.activeTab === 'size'">
+
+    <!-- Logo size (%) -->
+    <div class="panel-section">
+      <div class="panel-label">Logo</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0.3" max="2" step="0.05"
+                 :value="$store.cert.fontSizes.logo"
+                 @input="$store.cert.setFontSize('logo', $event.target.value)">
+          <span class="slider-tick" style="left: 41.18%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="Math.round($store.cert.fontSizes.logo * 100) + '%'"></span>
+      </div>
+    </div>
+
+    <template x-for="field in [
+      { key: 'org',         label: 'Organization', base: 13   },
+      { key: 'title',       label: 'Title',        base: 22   },
+      { key: 'presentedTo', label: 'Presented To', base: 15   },
+      { key: 'recipient',   label: 'Recipient',    base: 38   },
+      { key: 'body',        label: 'Body Text',    base: 17.5 },
+      { key: 'sig',         label: 'Signatures',   base: 11   },
+      { key: 'presentedBy', label: 'Presented By', base: 10   },
+      { key: 'date',        label: 'Date',         base: 14   }
+    ]" :key="field.key">
+      <div class="panel-section">
+        <div class="panel-label" x-text="field.label"></div>
+        <div class="panel-row">
+          <div class="slider-wrap">
+            <input type="range" min="0.5" max="2" step="0.05"
+                   :value="$store.cert.fontSizes[field.key]"
+                   @input="$store.cert.setFontSize(field.key, $event.target.value)">
+            <span class="slider-tick" style="left: 33.33%"></span>
+          </div>
+          <span class="panel-value"
+                x-text="Math.round(field.base * $store.cert.fontSizes[field.key]) + 'px'"></span>
+        </div>
+      </div>
+    </template>
+
+    <button class="panel-reset-btn"
+            @click="$store.cert.resetSizes()">Reset Defaults</button>
+
+  </div>
+
+  <!-- ═══ Spacing Tab ═══ -->
+  <div class="panel-body" x-show="$store.cert.activeTab === 'spacing'">
+
+    <!-- Border Margin -->
+    <div class="panel-section">
+      <div class="panel-label">Border Margin</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="30" max="90" step="1"
+                 :value="$store.cert.borderMargin"
+                 @input="$store.cert.setBorderMargin($event.target.value)">
+          <span class="slider-tick" style="left: 55%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.borderMargin + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Logo -->
+    <div class="panel-section">
+      <div class="panel-label">Logo</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="50" step="1"
+                 :value="$store.cert.spacing.logo"
+                 @input="$store.cert.setSpacing('logo', $event.target.value)">
+          <span class="slider-tick" style="left: 40%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.spacing.logo + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Organization -->
+    <div class="panel-section">
+      <div class="panel-label">Organization</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="30" step="1"
+                 :value="$store.cert.spacing.org"
+                 @input="$store.cert.setSpacing('org', $event.target.value)">
+          <span class="slider-tick" style="left: 33.33%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.spacing.org + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Title (above & below equal) -->
+    <div class="panel-section">
+      <div class="panel-label">Title</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="30" step="1"
+                 :value="$store.cert.spacing.title"
+                 @input="$store.cert.setSpacing('title', $event.target.value)">
+          <span class="slider-tick" style="left: 40%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.spacing.title + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Presented To (above — offset) -->
+    <div class="panel-section">
+      <div class="panel-label">Presented To</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="-50" max="50" step="1"
+                 :value="$store.cert.spacing.presentedTo"
+                 @input="$store.cert.setSpacing('presentedTo', $event.target.value)">
+          <span class="slider-tick" style="left: 50%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="($store.cert.spacing.presentedTo > 0 ? '+' : '') + $store.cert.spacing.presentedTo + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Recipient (above) -->
+    <div class="panel-section">
+      <div class="panel-label">Recipient</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="30" step="1"
+                 :value="$store.cert.spacing.recipient"
+                 @input="$store.cert.setSpacing('recipient', $event.target.value)">
+          <span class="slider-tick" style="left: 20%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.spacing.recipient + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Paragraph -->
+    <div class="panel-section">
+      <div class="panel-label">Paragraph</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="40" step="1"
+                 :value="$store.cert.spacing.paragraph"
+                 @input="$store.cert.setSpacing('paragraph', $event.target.value)">
+          <span class="slider-tick" style="left: 40%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.spacing.paragraph + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Signature (below) -->
+    <div class="panel-section">
+      <div class="panel-label">Signature</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="40" step="1"
+                 :value="$store.cert.spacing.sig"
+                 @input="$store.cert.setSpacing('sig', $event.target.value)">
+          <span class="slider-tick" style="left: 47.5%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.spacing.sig + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Presented By (above) -->
+    <div class="panel-section">
+      <div class="panel-label">Presented By</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="30" step="1"
+                 :value="$store.cert.spacing.presentedBy"
+                 @input="$store.cert.setSpacing('presentedBy', $event.target.value)">
+          <span class="slider-tick" style="left: 40%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.spacing.presentedBy + 'px'"></span>
+      </div>
+    </div>
+
+    <!-- Date (above & below equal) -->
+    <div class="panel-section">
+      <div class="panel-label">Date</div>
+      <div class="panel-row">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="30" step="1"
+                 :value="$store.cert.spacing.date"
+                 @input="$store.cert.setSpacing('date', $event.target.value)">
+          <span class="slider-tick" style="left: 33.33%"></span>
+        </div>
+        <span class="panel-value"
+              x-text="$store.cert.spacing.date + 'px'"></span>
+      </div>
+    </div>
+
+    <button class="panel-reset-btn"
+            @click="$store.cert.resetSpacing()">Reset Defaults</button>
+
+  </div>
+
+</div><!-- /format-panel -->
+
 <!-- Emphasis hint — lives outside .cert so overflow:hidden can't clip it -->
 <div class="hint-popup" id="hint-popup">
   <span class="hint-popup-label">Italic Emphasis</span>
@@ -656,64 +437,29 @@
   <em>Example: *exceptional service*</em>
 </div>
 
-<script>
-// ─── Default content ───────────────────────────────────────────────────────
-const DEFAULT_BODY =
-  'In recognition of *exceptional service* and outstanding contributions to the community. ' +
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ' +
-  'ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco ' +
-  'laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in ' +
-  'voluptate velit esse cillum dolore eu fugiat nulla pariatur. *Excepteur sint occaecat* ' +
-  'cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+<script type="module">
+import Alpine from 'https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/module.esm.js';
+import { initStore } from './js/store.js';
+import { initBodyText } from './js/body-text.js';
+import { scaleCert, adjustSpacing } from './js/cert-render.js';
+import { save } from './js/storage.js';
 
-const DEFAULT_SIGS = [
-  { name: 'Clark Kent',   title: 'Reporter, Daily Planet' },
-  { name: 'Peter Parker', title: 'Photographer'           }
-];
+// Make Alpine global (needed by store.js and other modules)
+window.Alpine = Alpine;
 
-// ─── Local storage — slot: "default" ──────────────────────────────────────
-const SLOT = 'default';
-function lsKey(f)     { return 'cert_' + SLOT + '_' + f; }
-function lsSave(f, v) { try { localStorage.setItem(lsKey(f), v); } catch(e) {} }
-function lsLoad(f)    { return localStorage.getItem(lsKey(f)); }
+// 1. Register store BEFORE Alpine processes DOM
+initStore();
 
-// ─── Emphasis helpers ──────────────────────────────────────────────────────
-function toHTML(raw) {
-  return raw.replace(/\*(.*?)\*/g, '<em>$1</em>');
-}
+// 2. Start Alpine — processes x-data elements, calls store.init()
+Alpine.start();
 
-function toRaw(html) {
-  return html
-    .replace(/<em>(.*?)<\/em>/gs, '*$1*')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g,  '<')
-    .replace(/&gt;/g,  '>');
-}
+// 3. Post-init setup (DOM is now fully processed by Alpine)
+initBodyText(adjustSpacing, raw => {
+  Alpine.store('cert').content.body = raw;
+  Alpine.store('cert').persistState();
+});
 
-// ─── Body text: toggle between raw (*) and rendered (<em>) ────────────────
-function initBodyText() {
-  const p = document.querySelector('.body-text');
-
-  const hint = document.getElementById('hint-popup');
-
-  p.addEventListener('focus', () => {
-    p.textContent = toRaw(p.innerHTML);
-    hint.classList.add('visible');
-  });
-
-  p.addEventListener('blur', () => {
-    const raw = p.textContent;
-    lsSave('body_raw', raw);
-    p.innerHTML = toHTML(raw);
-    hint.classList.remove('visible');
-    adjustSpacing();
-  });
-
-  p.addEventListener('input', () => adjustSpacing());
-}
-
-// ─── Prevent newlines in single-line fields ────────────────────────────────
+// Prevent newlines in single-line fields
 document.querySelector('.cert').addEventListener('keydown', e => {
   const singleLine = '.doc-title, .recipient-name, .presented-by, .cert-date, .sig-name, .sig-title';
   if (e.key === 'Enter' && e.target.matches(singleLine)) {
@@ -722,228 +468,124 @@ document.querySelector('.cert').addEventListener('keydown', e => {
   }
 });
 
-// ─── Signature management ──────────────────────────────────────────────────
-function getSigData() {
-  return Array.from(document.querySelectorAll('.sig-unit')).map(u => ({
-    name:  u.querySelector('.sig-name').textContent.trim(),
-    title: u.querySelector('.sig-title').textContent.trim()
-  }));
-}
-
-function renderSigs(data) {
-  const block = document.querySelector('.sig-block');
-  block.className = 'sig-block count-' + data.length;
-  block.innerHTML = data.map(s => `
-    <div class="sig-unit">
-      <div class="sig-line"></div>
-      <div class="sig-name"  contenteditable="true" spellcheck="false">${s.name}</div>
-      <div class="sig-title" contenteditable="true" spellcheck="false">${s.title}</div>
-    </div>`).join('');
-
-  document.getElementById('sig-count').textContent = data.length;
-  document.getElementById('sig-remove').disabled   = data.length <= 1;
-  document.getElementById('sig-add').disabled      = data.length >= 3;
-  lsSave('sigs', JSON.stringify(data));
-  adjustSpacing();
-}
-
-document.getElementById('sig-add').addEventListener('click', () => {
-  const data = getSigData();
-  if (data.length >= 3) return;
-  data.push({ name: 'Name', title: 'Title, Springfield VFD' });
-  renderSigs(data);
-});
-
-document.getElementById('sig-remove').addEventListener('click', () => {
-  const data = getSigData();
-  if (data.length <= 1) return;
-  data.pop();
-  renderSigs(data);
-});
-
-// ─── Card stock color picker ───────────────────────────────────────────────
-document.querySelectorAll('.color-btn[data-bg]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.color-btn[data-bg]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.documentElement.style.setProperty('--cream', btn.dataset.bg);
-    lsSave('bg', btn.dataset.bg);
+// Sync text field edits to store content and persist
+[
+  ['.doc-title',      'title'      ],
+  ['.recipient-name', 'recipient'  ],
+  ['.org-name',       'orgName'    ],
+  ['.presented-by',   'presentedBy'],
+  ['.cert-date',      'date'       ],
+].forEach(([sel, key]) => {
+  document.querySelector(sel).addEventListener('blur', function() {
+    Alpine.store('cert').content[key] = this.textContent.trim();
+    Alpine.store('cert').persistState();
   });
 });
 
-// ─── Logo upload ───────────────────────────────────────────────────────────
+// Sync sig edits to store content and persist
+document.querySelector('.cert').addEventListener('focusout', e => {
+  if (e.target.matches('.sig-name, .sig-title')) {
+    const store = Alpine.store('cert');
+    const units = document.querySelectorAll('.sig-unit');
+    store.content.sigs = Array.from(units).map(u => ({
+      name:  u.querySelector('.sig-name').textContent.trim(),
+      title: u.querySelector('.sig-title').textContent.trim(),
+    }));
+    store.persistState();
+  }
+});
+
+// ── Dropdown helpers ──
+function closeAllDropdowns() {
+  document.querySelectorAll('.tb-dropdown').forEach(d => d.classList.remove('open'));
+  document.getElementById('print-split').classList.remove('open');
+}
+document.addEventListener('click', closeAllDropdowns);
+
+// Card stock dropdown
+document.getElementById('cardstock-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const dd = document.getElementById('cardstock-dropdown');
+  const wasOpen = dd.classList.contains('open');
+  closeAllDropdowns();
+  if (!wasOpen) dd.classList.add('open');
+});
+document.querySelectorAll('#cardstock-menu .tb-dropdown-item').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    Alpine.store('cert').setCardStock(btn.dataset.bg);
+    closeAllDropdowns();
+  });
+});
+
+// Print split-button dropdown
+document.getElementById('print-arrow-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const wrap = document.getElementById('print-split');
+  const wasOpen = wrap.classList.contains('open');
+  closeAllDropdowns();
+  if (!wasOpen) wrap.classList.add('open');
+});
+
+// Logo upload
 document.getElementById('logo-wrap').addEventListener('click', () => {
   document.getElementById('logo-input').click();
 });
-
 document.getElementById('logo-input').addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = ev => {
-    const dataUrl = ev.target.result;
-    document.getElementById('logo-img').src = dataUrl;
-    lsSave('logo', dataUrl);
+    document.getElementById('logo-img').src = ev.target.result;
+    save('logo', ev.target.result);
   };
   reader.readAsDataURL(file);
   e.target.value = '';
 });
 
-// ─── Save sig name/title edits on blur ─────────────────────────────────────
-document.querySelector('.cert').addEventListener('focusout', e => {
-  if (e.target.matches('.sig-name, .sig-title')) {
-    lsSave('sigs', JSON.stringify(getSigData()));
-  }
-});
-
-// ─── Save static fields on blur ────────────────────────────────────────────
-[
-  ['.doc-title',      'title'       ],
-  ['.recipient-name', 'recipient'   ],
-  ['.org-name',       'org_name'    ],
-  ['.presented-by',   'presented_by'],
-  ['.cert-date',      'date'        ],
-].forEach(([sel, key]) => {
-  document.querySelector(sel).addEventListener('blur', function() {
-    lsSave(key, this.textContent.trim());
-  });
-});
-
-// ─── Load from local storage (falls back to defaults) ──────────────────────
-function loadFromStorage() {
-  const str = (key, fallback) => lsLoad(key) ?? fallback;
-
-  document.querySelector('.doc-title').textContent      = str('title',        'Certificate of Recognition');
-  document.querySelector('.recipient-name').textContent = str('recipient',    'Jimmy Smith');
-  document.querySelector('.org-name').textContent       = str('org_name',     'Springfield Volunteer Fire Department');
-  document.querySelector('.presented-by').textContent   = str('presented_by', 'Presented by the Volunteer Fire Department');
-  document.querySelector('.cert-date').textContent      = str('date',         getTomorrowDate());
-
-  // Body
-  const savedBody = lsLoad('body_raw');
-  document.querySelector('.body-text').innerHTML = toHTML(savedBody ?? DEFAULT_BODY);
-
-  // Sigs
-  const savedSigs = lsLoad('sigs');
-  renderSigs(savedSigs ? JSON.parse(savedSigs) : DEFAULT_SIGS);
-
-  // Logo
-  const savedLogo = lsLoad('logo');
-  if (savedLogo) document.getElementById('logo-img').src = savedLogo;
-
-  // Card stock color
-  const savedBg = lsLoad('bg');
-  if (savedBg) {
-    document.documentElement.style.setProperty('--cream', savedBg);
-    document.querySelectorAll('.color-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.bg === savedBg);
-    });
-  }
-
-  // Size mode
-  setMode(lsLoad('size_mode') ?? '85x11');
-}
-
-// ─── Size modes ────────────────────────────────────────────────────────────
-const SIZE_MODES = {
-  '85x11': { w: 816,  h: 1056, certW: '8.5in', certH: '11in', pageMargin: '0'              },
-  '8x10':  { w: 768,  h: 960,  certW: '8in',   certH: '10in', pageMargin: '0.5in 0.25in'   }
-};
-
-let currentMode = '85x11';
-
-function setMode(mode) {
-  currentMode = mode;
-  const m = SIZE_MODES[mode];
-
-  document.documentElement.style.setProperty('--w', m.w + 'px');
-  document.documentElement.style.setProperty('--h', m.h + 'px');
-
-  document.getElementById('print-size').textContent =
-    '@page { size: 8.5in 11in; margin: ' + m.pageMargin + '; }\n' +
-    '@media print {\n' +
-    '  .cert-outer { width: ' + m.certW + ' !important; height: ' + m.certH + ' !important; }\n' +
-    '  .cert        { width: ' + m.certW + ' !important; height: ' + m.certH + ' !important; }\n' +
-    '}';
-
-  document.querySelectorAll('.size-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.size === mode);
-  });
-
-  lsSave('size_mode', mode);
-  scaleCert();
-  adjustSpacing();
-}
-
-document.querySelectorAll('.size-btn').forEach(btn => {
-  btn.addEventListener('click', () => setMode(btn.dataset.size));
-});
-
-// ─── Certificate scaling ───────────────────────────────────────────────────
-function scaleCert() {
-  const m      = SIZE_MODES[currentMode];
-  const availW = window.innerWidth  - 40;        // 20px padding each side
-  const availH = window.innerHeight - 54 - 76;   // toolbar + vert padding
-  const scale  = Math.min(availW / m.w, availH / m.h, 1);
-
-  document.querySelector('.cert-scale').style.transform = 'scale(' + scale + ')';
-
-  const outer = document.querySelector('.cert-outer');
-  outer.style.width  = Math.round(m.w * scale) + 'px';
-  outer.style.height = Math.round(m.h * scale) + 'px';
-}
-
-window.addEventListener('resize', scaleCert);
-
-// ─── Dynamic vertical spacing ──────────────────────────────────────────────
-function adjustSpacing() {
-  const presentedTo = document.querySelector('.presented-to');
-  const sigRule     = document.getElementById('sig-rule');
-
-  presentedTo.style.marginTop = '0';
-  sigRule.style.marginBottom  = '0';
-
-  requestAnimationFrame(() => {
-    const content = document.querySelector('.content');
-    const cs      = getComputedStyle(content);
-    const innerH  = content.offsetHeight
-      - parseFloat(cs.paddingTop)
-      - parseFloat(cs.paddingBottom);
-
-    const topH = document.querySelector('.top-section').offsetHeight;
-    const midH = document.querySelector('.mid-section').offsetHeight;
-    const botH = document.querySelector('.bottom-section').offsetHeight;
-
-    const available  = Math.max(0, innerH - topH - midH - botH);
-    const forMargins = Math.max(0, available - 20);
-
-    presentedTo.style.marginTop = Math.round(forMargins / 5) + 'px';
-    sigRule.style.marginBottom  = Math.round((forMargins * 2) / 3) + 'px';
-  });
-}
-
-// ─── Print ─────────────────────────────────────────────────────────────────
+// Print button
 document.getElementById('print-btn').addEventListener('click', () => {
-  if (document.activeElement && document.activeElement.isContentEditable) {
-    document.activeElement.blur();
-  }
+  if (document.activeElement?.isContentEditable) document.activeElement.blur();
   setTimeout(() => window.print(), 50);
 });
 
-// ─── Tomorrow's date ───────────────────────────────────────────────────────
-function getTomorrowDate() {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
+// Save certificate to file (Save As dialog)
+document.getElementById('save-cert-btn').addEventListener('click', () => {
+  Alpine.store('cert').saveCertToFile();
+});
 
-// ─── Init ──────────────────────────────────────────────────────────────────
-initBodyText();
-loadFromStorage();
+// Load certificate from file
+document.getElementById('load-cert-btn').addEventListener('click', () => {
+  document.getElementById('load-cert-input').click();
+});
 
-// Re-run after fonts load for accurate measurements
+document.getElementById('load-cert-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    let parsed;
+    try { parsed = JSON.parse(ev.target.result); } catch(err) { return; }
+    if (!parsed.content || !parsed.format) return;
+    Alpine.store('cert').loadFromData(parsed);
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// Reset All button
+document.getElementById('reset-all-btn').addEventListener('click', () => {
+  if (confirm('Are you sure? This will reset all content and formatting back to defaults.')) {
+    Alpine.store('cert').resetAll();
+  }
+});
+
+// Scale on resize
+window.addEventListener('resize', () => scaleCert(Alpine.store('cert').sizeMode));
+
+// Re-run after fonts load
 document.fonts.ready.then(() => {
-  scaleCert();
+  scaleCert(Alpine.store('cert').sizeMode);
   adjustSpacing();
 });
 </script>
