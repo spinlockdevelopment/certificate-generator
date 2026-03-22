@@ -3,15 +3,42 @@ import { SIZE_MODES, PALETTES } from './config.js';
 
 export function applyCSSVars(state) {
   const r = document.documentElement.style;
-  r.setProperty('--font-scale',    state.fontScale);
-  r.setProperty('--spacing-scale', state.spacingScale);
-  r.setProperty('--border-margin', state.borderMargin + 'px');
 
+  // Individual font size scales
+  const fs = state.fontSizes || {};
+  r.setProperty('--logo-scale',            fs.logo        ?? 1);
+  r.setProperty('--fs-org-scale',          fs.org         ?? 1);
+  r.setProperty('--fs-title-scale',        fs.title       ?? 1);
+  r.setProperty('--fs-recipient-scale',    fs.recipient   ?? 1);
+  r.setProperty('--fs-body-scale',         fs.body        ?? 1);
+  r.setProperty('--fs-presented-to-scale', fs.presentedTo ?? 1);
+  r.setProperty('--fs-sig-scale',          fs.sig         ?? 1);
+  r.setProperty('--fs-presented-by-scale', fs.presentedBy ?? 1);
+  r.setProperty('--fs-date-scale',         fs.date        ?? 1);
+
+  // Spacing (individual px values)
+  const sp = state.spacing || {};
+  const para = sp.paragraph ?? 16;
+  r.setProperty('--sp-logo',              (sp.logo        ?? 20) + 'px');
+  r.setProperty('--sp-org',               (sp.org         ?? 10) + 'px');
+  r.setProperty('--sp-title',             (sp.title       ?? 12) + 'px');
+  r.setProperty('--sp-presented-to-offset', (sp.presentedTo ?? 0) + 'px');
+  r.setProperty('--sp-recipient',          (sp.recipient   ?? 6)  + 'px');
+  r.setProperty('--sp-para-above-hr',      para + 'px');
+  r.setProperty('--sp-para-below-hr',      para + 'px');
+  r.setProperty('--sp-para-hr-below',      para + 'px');
+  r.setProperty('--sp-sig',               (sp.sig         ?? 19) + 'px');
+  r.setProperty('--sp-presented-by',      (sp.presentedBy ?? 12) + 'px');
+  r.setProperty('--sp-date',              (sp.date        ?? 10) + 'px');
+
+  // Border margin
+  r.setProperty('--border-margin', (state.borderMargin ?? 63) + 'px');
+
+  // Palette colors
   const p = PALETTES[state.paletteIndex];
   r.setProperty('--accent',    p.accent);
   r.setProperty('--accent-lt', p.accentLt);
   r.setProperty('--gold',      p.gold);
-  // card stock overrides the palette cream
   r.setProperty('--cream',     state.cardStock || p.cream);
   r.setProperty('--ink',       p.ink);
   r.setProperty('--ink-mid',   p.inkMid);
@@ -26,11 +53,10 @@ export function applyFontPair(pair) {
 
 export function scaleCert(sizeMode) {
   const m      = SIZE_MODES[sizeMode];
-  // Reserve 240px for the format panel on desktop (≥769px)
   const panelW = window.innerWidth >= 769 ? 240 : 0;
   const availW = window.innerWidth  - 40 - panelW;
   const availH = window.innerHeight - 54 - 76;
-  const scale  = Math.min(availW / m.w, availH / m.h, 1);
+  const scale  = Math.min(availW / m.w, availH / m.h);
 
   document.querySelector('.cert-scale').style.transform = 'scale(' + scale + ')';
   const outer = document.querySelector('.cert-outer');
@@ -59,23 +85,46 @@ export function adjustSpacing() {
     const available  = Math.max(0, innerH - topH - midH - botH);
     const forMargins = Math.max(0, available - 20);
 
-    presentedTo.style.marginTop = Math.round(forMargins / 5) + 'px';
-    sigRule.style.marginBottom  = Math.round((forMargins * 2) / 3) + 'px';
+    // "Presented To (above)" offset from Spacing tab slider
+    const offset = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--sp-presented-to-offset') || '0'
+    );
+
+    presentedTo.style.marginTop = Math.round(forMargins / 5 + offset) + 'px';
+    sigRule.style.marginBottom  = Math.round((forMargins * 2) / 3 - offset) + 'px';
   });
 }
 
 export function renderSigs(data) {
   const block = document.querySelector('.sig-block');
   block.className = 'sig-block count-' + data.length;
-  block.innerHTML = data.map(s => `
-    <div class="sig-unit">
-      <div class="sig-line"></div>
-      <div class="sig-name"  contenteditable="true" spellcheck="false">${s.name}</div>
-      <div class="sig-title" contenteditable="true" spellcheck="false">${s.title}</div>
-    </div>`).join('');
 
-  document.getElementById('sig-count').textContent = data.length;
-  document.getElementById('sig-remove').disabled   = data.length <= 1;
-  document.getElementById('sig-add').disabled      = data.length >= 3;
+  // Build sig units using DOM methods (safe text insertion)
+  block.textContent = '';
+  data.forEach(s => {
+    const unit = document.createElement('div');
+    unit.className = 'sig-unit';
+
+    const line = document.createElement('div');
+    line.className = 'sig-line';
+    unit.appendChild(line);
+
+    const name = document.createElement('div');
+    name.className = 'sig-name';
+    name.contentEditable = 'true';
+    name.spellcheck = false;
+    name.textContent = s.name;
+    unit.appendChild(name);
+
+    const title = document.createElement('div');
+    title.className = 'sig-title';
+    title.contentEditable = 'true';
+    title.spellcheck = false;
+    title.textContent = s.title;
+    unit.appendChild(title);
+
+    block.appendChild(unit);
+  });
+
   adjustSpacing();
 }

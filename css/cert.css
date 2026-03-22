@@ -53,7 +53,12 @@
   width: 100%;
 }
 
-.cross-wrap { margin-bottom: 20px; }
+.cross-wrap { margin-bottom: var(--sp-logo); }
+
+#logo-img {
+  width: calc(160px * var(--logo-scale));
+  height: calc(160px * var(--logo-scale));
+}
 
 /* ─── Logo upload overlay ────────────────────────────── */
 .logo-wrap {
@@ -92,7 +97,7 @@
   color: var(--accent);
   text-transform: uppercase;
   text-align: center;
-  margin-bottom: var(--mb-org);
+  margin-bottom: var(--sp-org);
 }
 
 /* ─── Rules ──────────────────────────────────────────── */
@@ -102,13 +107,14 @@
   flex-direction: column;
   align-items: center;
   gap: var(--gap-rules);
-  margin-bottom: var(--mb-rules);
+  margin-bottom: var(--sp-title);
 }
 .rule      { width: 88%; border: none; }
 .rule-thin { border-top: 0.5px solid var(--ink); }
 .rule-mid  { border-top: 1px solid var(--accent); width: 80%; }
 .rule-gold { border-top: 0.75px solid var(--gold); width: 72%; }
 .rule-sm   { width: 55%; border-top: 0.5px solid var(--ink-muted); }
+.rule-set-bottom { margin-bottom: var(--sp-presented-by); }
 
 /* ─── Document title ─────────────────────────────────── */
 .doc-title {
@@ -118,7 +124,7 @@
   letter-spacing: 0.18em;
   color: var(--ink);
   text-align: center;
-  margin-bottom: var(--mb-title);
+  margin-bottom: var(--sp-title);
   line-height: 1.2;
 }
 
@@ -136,7 +142,7 @@
   font-size: var(--fs-presented-to);
   color: var(--ink-muted);
   letter-spacing: 0.06em;
-  margin-bottom: var(--mb-presented-to);
+  margin-bottom: var(--sp-recipient);
 }
 
 .recipient-name {
@@ -147,7 +153,7 @@
   letter-spacing: 0.05em;
   text-align: center;
   line-height: 1.15;
-  margin-bottom: var(--mb-recipient);
+  margin-bottom: var(--sp-para-above-hr);
 }
 
 /* ─── Ornamental divider ─────────────────────────────── */
@@ -155,7 +161,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: var(--mb-divider);
+  margin-bottom: var(--sp-para-below-hr);
 }
 .orn-line    { width: 60px; height: 0.75px; background: var(--accent); }
 .orn-dot     { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
@@ -169,7 +175,7 @@
   color: var(--ink-mid);
   text-align: center;
   width: 88%;
-  margin-bottom: var(--mb-body);
+  margin-bottom: var(--sp-para-hr-below);
 }
 .body-text em { font-style: italic; color: var(--ink); }
 
@@ -220,7 +226,7 @@
   display: flex;
   justify-content: space-between;
   width: 92%;
-  margin-bottom: var(--mb-sig);
+  margin-bottom: var(--sp-sig);
   margin-top: 4px;
 }
 .sig-block.count-1 { justify-content: center; }
@@ -261,7 +267,7 @@
   color: var(--ink-muted);
   text-align: center;
   text-transform: uppercase;
-  margin-bottom: var(--mb-presented-by);
+  margin-bottom: var(--sp-date);
 }
 
 .cert-date {
@@ -270,7 +276,7 @@
   font-size: var(--fs-date);
   color: var(--ink-mid);
   letter-spacing: 0.05em;
-  margin-bottom: var(--mb-date);
+  margin-bottom: var(--sp-date);
 }
 
 /* ─── Gold accent bar ────────────────────────────────── */

@@ -1,5 +1,18 @@
 // js/store.js
-import { SIZE_MODES, FONT_PAIRS, PALETTES, DEFAULT_CERT_DATA } from './config.js';
+import { SIZE_MODES, FONT_PAIRS, PALETTES, DEFAULT_CERT_DATA, DEFAULT_SPACING } from './config.js';
+
+const CARD_STOCK_LABELS = { '#FDFAF2': 'Ivory', '#FAFAF8': 'Paper White' };
+
+function syncCardStockUI(bg) {
+  const swatch = document.getElementById('cardstock-swatch');
+  const label  = document.getElementById('cardstock-label');
+  if (swatch) swatch.style.background = bg;
+  if (label)  label.textContent = CARD_STOCK_LABELS[bg] ?? 'Custom';
+  document.querySelectorAll('#cardstock-menu .tb-dropdown-item').forEach(b => {
+    b.classList.toggle('active', b.dataset.bg === bg);
+  });
+}
+
 import { load, persistState as storagePersist, loadState } from './storage.js';
 import { applyCSSVars, applyFontPair, scaleCert, adjustSpacing, renderSigs } from './cert-render.js';
 import { toHTML } from './body-text.js';
@@ -17,29 +30,27 @@ function applyMode(store, mode) {
     '}';
   scaleCert(mode);
   adjustSpacing();
-  document.querySelectorAll('.size-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.size === mode);
-  });
 }
 
 export function initStore() {
   Alpine.store('cert', {
-    // ── Format state (top-level, unchanged by this refactor) ──
-    fontScale:     DEFAULT_CERT_DATA.format.fontScale,
-    spacingScale:  DEFAULT_CERT_DATA.format.spacingScale,
+    // ── Format state ──
+    fontSizes:     { ...DEFAULT_CERT_DATA.format.fontSizes },
+    spacing:       { ...DEFAULT_SPACING },
     borderMargin:  DEFAULT_CERT_DATA.format.borderMargin,
     fontPairIndex: DEFAULT_CERT_DATA.format.fontPairIndex,
     paletteIndex:  DEFAULT_CERT_DATA.format.paletteIndex,
     sizeMode:      DEFAULT_CERT_DATA.format.sizeMode,
     cardStock:     DEFAULT_CERT_DATA.format.cardStock,
 
-    // ── Content state (canonical in-memory copy of all text fields) ──
+    // ── Content state ──
     content: { ...DEFAULT_CERT_DATA.content, sigs: [...DEFAULT_CERT_DATA.content.sigs] },
 
     // ── UI state ──
     panelOpen: false,
+    activeTab: 'style',
 
-    // ── Config arrays for Alpine x-for template loops ──
+    // ── Config arrays for Alpine template loops ──
     fontPairs: FONT_PAIRS,
     palettes:  PALETTES,
 
@@ -48,16 +59,34 @@ export function initStore() {
       storagePersist({ content: this.content, format: this._formatSnapshot() });
     },
 
-    // ── Save current state to a .json file ──
-    saveCertToFile() {
-      const json = JSON.stringify(
-        { content: this.content, format: this._formatSnapshot() },
-        null, 2
-      );
+    // ── Save current state to a .json file (Save As dialog) ──
+    async saveCertToFile() {
+      const blob = { content: this.content, format: this._formatSnapshot() };
+      const json = JSON.stringify(blob, null, 2);
+
+      const name = (this.content.recipient || 'certificate').replace(/\s+/g, '-');
+      const today = new Date().toISOString().slice(0, 10);
+      const defaultName = today + '_' + name + '.json';
+
+      if (window.showSaveFilePicker) {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: defaultName,
+            types: [{ description: 'JSON Certificate', accept: { 'application/json': ['.json'] } }],
+          });
+          const writable = await handle.createWritable();
+          await writable.write(json);
+          await writable.close();
+          return;
+        } catch (e) {
+          if (e.name === 'AbortError') return;
+        }
+      }
+      // Fallback: trigger download
       const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'certificate.json';
+      a.download = defaultName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -69,10 +98,10 @@ export function initStore() {
       const c = { ...DEFAULT_CERT_DATA.content, ...data.content };
       const f = { ...DEFAULT_CERT_DATA.format,  ...data.format  };
 
-      // Apply format fields — paletteIndex before cardStock (preserves custom card stock)
-      this.fontScale     = +f.fontScale;
-      this.spacingScale  = +f.spacingScale;
-      this.borderMargin  = +f.borderMargin;
+      // Apply format fields
+      this.fontSizes     = { ...DEFAULT_CERT_DATA.format.fontSizes, ...(f.fontSizes || {}) };
+      this.spacing       = { ...DEFAULT_SPACING, ...(f.spacing || {}) };
+      this.borderMargin  = +(f.borderMargin ?? 63);
       this.fontPairIndex = +f.fontPairIndex;
       this.paletteIndex  = +f.paletteIndex;
       this.sizeMode      = f.sizeMode;
@@ -94,27 +123,88 @@ export function initStore() {
       document.querySelector('.body-text').innerHTML        = toHTML(c.body);
       renderSigs(c.sigs);
 
-      // Sync toolbar active states
-      document.querySelectorAll('.color-btn[data-bg]').forEach(b => {
-        b.classList.toggle('active', b.dataset.bg === this.cardStock);
-      });
-
+      syncCardStockUI(this.cardStock);
       this.persistState();
     },
 
-    // ── Format panel methods ──
-    setFontScale(v)    { this.fontScale = +v;    applyCSSVars(this); adjustSpacing(); this.persistState(); },
-    setSpacing(v)      { this.spacingScale = +v; applyCSSVars(this); adjustSpacing(); this.persistState(); },
-    setBorderMargin(v) { this.borderMargin = +v; applyCSSVars(this); adjustSpacing(); this.persistState(); },
+    // ── Size tab: individual font size scales ──
+    setFontSize(key, v) {
+      this.fontSizes = { ...this.fontSizes, [key]: +v };
+      applyCSSVars(this);
+      adjustSpacing();
+      this.persistState();
+    },
 
+    // ── Spacing tab ──
+    setSpacing(key, v) {
+      this.spacing = { ...this.spacing, [key]: +v };
+      applyCSSVars(this);
+      adjustSpacing();
+      this.persistState();
+    },
+
+    setBorderMargin(v) {
+      this.borderMargin = +v;
+      applyCSSVars(this);
+      adjustSpacing();
+      this.persistState();
+    },
+
+    // ── Reset just Size tab font sizes ──
+    resetSizes() {
+      this.fontSizes = { ...DEFAULT_CERT_DATA.format.fontSizes };
+      applyCSSVars(this);
+      adjustSpacing();
+      this.persistState();
+    },
+
+    // ── Reset just Spacing tab values ──
+    resetSpacing() {
+      this.spacing = { ...DEFAULT_SPACING };
+      this.borderMargin = DEFAULT_CERT_DATA.format.borderMargin;
+      applyCSSVars(this);
+      adjustSpacing();
+      this.persistState();
+    },
+
+    // ── Reset everything (content + format) back to factory defaults ──
+    resetAll() {
+      // Format
+      this.fontSizes     = { ...DEFAULT_CERT_DATA.format.fontSizes };
+      this.spacing       = { ...DEFAULT_SPACING };
+      this.borderMargin  = DEFAULT_CERT_DATA.format.borderMargin;
+      this.fontPairIndex = DEFAULT_CERT_DATA.format.fontPairIndex;
+      this.paletteIndex  = DEFAULT_CERT_DATA.format.paletteIndex;
+      this.sizeMode      = DEFAULT_CERT_DATA.format.sizeMode;
+      this.cardStock     = DEFAULT_CERT_DATA.format.cardStock;
+
+      // Content
+      this.content = { ...DEFAULT_CERT_DATA.content, sigs: [...DEFAULT_CERT_DATA.content.sigs] };
+
+      applyCSSVars(this);
+      applyFontPair(FONT_PAIRS[this.fontPairIndex]);
+      applyMode(this, this.sizeMode);
+
+      // Populate DOM
+      document.querySelector('.doc-title').textContent      = this.content.title;
+      document.querySelector('.recipient-name').textContent = this.content.recipient;
+      document.querySelector('.org-name').textContent       = this.content.orgName;
+      document.querySelector('.presented-by').textContent   = this.content.presentedBy;
+      document.querySelector('.cert-date').textContent      = this.content.date;
+      document.querySelector('.body-text').innerHTML        = toHTML(this.content.body);
+      renderSigs(this.content.sigs);
+
+      syncCardStockUI(this.cardStock);
+      this.persistState();
+    },
+
+    // ── Style tab ──
     setPalette(i) {
       this.paletteIndex = +i;
       this.cardStock = PALETTES[i].cream;
       applyCSSVars(this);
       this.persistState();
-      document.querySelectorAll('.color-btn[data-bg]').forEach(b => {
-        b.classList.toggle('active', b.dataset.bg === this.cardStock);
-      });
+      syncCardStockUI(this.cardStock);
     },
 
     setFontPair(i) {
@@ -135,8 +225,8 @@ export function initStore() {
 
     _formatSnapshot() {
       return {
-        fontScale:     this.fontScale,
-        spacingScale:  this.spacingScale,
+        fontSizes:     { ...this.fontSizes },
+        spacing:       { ...this.spacing },
         borderMargin:  this.borderMargin,
         fontPairIndex: this.fontPairIndex,
         paletteIndex:  this.paletteIndex,
@@ -162,17 +252,21 @@ export function initStore() {
     init() {
       const saved = loadState();
       if (saved) {
-        // Merge saved state over defaults (handles partial files)
         this.content = { ...DEFAULT_CERT_DATA.content, ...saved.content };
         const f = { ...DEFAULT_CERT_DATA.format, ...saved.format };
-        this.fontScale     = +f.fontScale;
-        this.spacingScale  = +f.spacingScale;
-        this.borderMargin  = +f.borderMargin;
+        this.fontSizes     = { ...DEFAULT_CERT_DATA.format.fontSizes, ...(f.fontSizes || {}) };
+        this.spacing       = { ...DEFAULT_SPACING, ...(f.spacing || {}) };
+        this.borderMargin  = +(f.borderMargin ?? 63);
         this.fontPairIndex = +f.fontPairIndex;
         this.paletteIndex  = +f.paletteIndex;
         this.sizeMode      = f.sizeMode;
         this.cardStock     = f.cardStock;
       }
+
+      // Fallback for empty fields (stale localStorage)
+      if (!this.content.body) this.content.body = DEFAULT_CERT_DATA.content.body;
+      if (!this.content.date) this.content.date = DEFAULT_CERT_DATA.content.date;
+      if (!this.content.sigs?.length) this.content.sigs = [...DEFAULT_CERT_DATA.content.sigs];
 
       // Apply CSS and layout
       applyCSSVars(this);
@@ -192,10 +286,8 @@ export function initStore() {
       const savedLogo = load('logo');
       if (savedLogo) document.getElementById('logo-img').src = savedLogo;
 
-      // Sync card stock active state (size-btn state is handled by applyMode above)
-      document.querySelectorAll('.color-btn[data-bg]').forEach(b => {
-        b.classList.toggle('active', b.dataset.bg === this.cardStock);
-      });
+      // Sync card stock active state
+      syncCardStockUI(this.cardStock);
     },
   });
 }

@@ -1,10 +1,10 @@
 /* ─── Format Panel ───────────────────────────────────── */
 .format-panel {
   position: fixed;
-  top: 54px; right: 0; bottom: 0;
+  top: 54px; left: 0; bottom: 0;
   width: 240px;
   background: #161616;
-  border-left: 1px solid #222;
+  border-right: 1px solid #222;
   overflow-y: auto;
   z-index: 100;
   display: flex;
@@ -13,7 +13,7 @@
 
 /* Cert area yields space for the panel on desktop */
 @media (min-width: 769px) {
-  .cert-page { padding-right: 240px; }
+  .cert-page { padding-left: 240px; }
 }
 
 /* ─── Panel inner structure ──────────────────────────── */
@@ -21,21 +21,37 @@
   display: none;
 }
 
-.panel-header {
-  padding: 14px 16px 10px;
-  border-bottom: 1px solid #1e1e1e;
+/* ─── Tab bar ────────────────────────────────────────── */
+.panel-tabs {
+  display: flex;
+  border-bottom: 1px solid #2a2a2a;
   flex-shrink: 0;
 }
 
-.panel-title {
-  font-family: var(--font-heading);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: var(--gold);
+.panel-tab {
+  flex: 1;
+  padding: 11px 0 9px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #666;
+  font-family: var(--font-body-ff);
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+  text-align: center;
 }
 
+.panel-tab:hover:not(.active) { color: #999; }
+
+.panel-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* ─── Panel body ─────────────────────────────────────── */
 .panel-body {
   padding: 12px 16px 24px;
   overflow-y: auto;
@@ -62,12 +78,70 @@
 }
 
 .panel-value {
-  font-family: var(--font-heading);
+  font-family: var(--font-body-ff);
   font-size: 11px;
   color: #aaa;
   min-width: 38px;
   text-align: right;
   flex-shrink: 0;
+}
+
+/* ─── Select dropdowns ──────────────────────────────── */
+.panel-select {
+  width: 100%;
+  padding: 7px 10px;
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 3px;
+  color: #999;
+  font-family: var(--font-body-ff);
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='8' height='5' viewBox='0 0 8 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5L4 4L7.5 0.5' stroke='%23555' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 26px;
+}
+
+.panel-select:hover { border-color: #444; color: #ccc; }
+.panel-select:focus { border-color: var(--gold); }
+
+.panel-select option {
+  background: #1e1e1e;
+  color: #ccc;
+}
+
+/* ─── Signature counter (in panel) ───────────────────── */
+.sig-counter { display: flex; align-items: center; gap: 5px; }
+
+.sig-btn {
+  width: 22px;
+  height: 22px;
+  background: transparent;
+  border: 1px solid #363636;
+  border-radius: 3px;
+  color: #999;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.12s, color 0.12s;
+  padding-bottom: 1px;
+}
+.sig-btn:hover:not(:disabled) { border-color: #666; color: #ddd; }
+.sig-btn:disabled { opacity: 0.25; cursor: default; }
+
+.sig-count-display {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  color: #aaa;
+  min-width: 14px;
+  text-align: center;
 }
 
 /* ─── Range sliders ──────────────────────────────────── */
@@ -102,71 +176,44 @@
   cursor: pointer;
 }
 
-/* ─── Palette buttons ────────────────────────────────── */
-.palette-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.palette-btn {
+/* ─── Slider with default tick mark ──────────────────── */
+.slider-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 7px 10px;
-  background: transparent;
-  border: 1px solid #2a2a2a;
+}
+
+.slider-tick {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 16px;
+  background: #555;
+  border-radius: 1px;
+  pointer-events: none;
+  transform: translate(-1px, -50%);
+}
+
+/* ─── Reset Defaults button (section-level) ──────────── */
+.panel-reset-btn {
+  width: 100%;
+  padding: 8px 0;
+  background: var(--accent);
+  border: none;
   border-radius: 3px;
-  color: #888;
-  font-family: var(--font-body-ff);
-  font-size: 13px;
+  color: #f5e8e8;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   cursor: pointer;
-  text-align: left;
-  transition: border-color 0.12s, color 0.12s;
+  transition: background 0.12s;
+  margin-top: 8px;
 }
-
-.palette-btn::before {
-  content: '';
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--p-accent, #888);
-  flex-shrink: 0;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.palette-btn.active {
-  border-color: var(--gold);
-  color: #ccc;
-}
-
-.palette-btn:hover:not(.active) {
-  border-color: #444;
-  color: #aaa;
-}
-
-/* ─── Font pair buttons ──────────────────────────────── */
-.font-pair-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.font-pair-btn {
-  padding: 7px 10px;
-  background: transparent;
-  border: 1px solid #2a2a2a;
-  border-radius: 3px;
-  color: #888;
-  font-family: var(--font-body-ff);
-  font-size: 13px;
-  cursor: pointer;
-  text-align: left;
-  transition: border-color 0.12s, color 0.12s;
-}
-
-.font-pair-btn.active { border-color: var(--gold); color: #ccc; }
-.font-pair-btn:hover:not(.active) { border-color: #444; color: #aaa; }
+.panel-reset-btn:hover { background: var(--accent-lt); }
 
 /* ─── Mobile: bottom sheet ───────────────────────────── */
 @media (max-width: 768px) {
@@ -198,7 +245,7 @@
     flex-shrink: 0;
   }
 
-  .cert-page { padding-right: 0 !important; }
+  .cert-page { padding-left: 0 !important; }
 
   /* Format trigger button in toolbar (mobile only) */
   .format-trigger-btn {
